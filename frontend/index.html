@@ -1,0 +1,699 @@
+<!DOCTYPE html>
+<html lang="uz">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pet Tashkent — Shahar Hayvonlari Ekotizimi</title>
+    <meta name="description"
+        content="Toshkent shahridagi hayvonlar uchun yagona platforma - sotish, xarid, foster, adoptsiya, veterinar klinikalar va xayriya">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        primary: {
+                            50: '#fef3e2',
+                            100: '#fde6c4',
+                            200: '#fbd18a',
+                            300: '#f9b84e',
+                            400: '#f7a21e',
+                            500: '#e8860c',
+                            600: '#c96507',
+                            700: '#a7470a',
+                            800: '#883810',
+                            900: '#712f10',
+                        },
+                        accent: {
+                            50: '#eef8ff',
+                            100: '#d9efff',
+                            200: '#bce4ff',
+                            300: '#8ed4ff',
+                            400: '#59bbff',
+                            500: '#339cff',
+                            600: '#1a7af5',
+                            700: '#1363e1',
+                            800: '#1650b6',
+                            900: '#18468f',
+                        },
+                        pet: {
+                            dog: '#8B5CF6',
+                            cat: '#EC4899',
+                            bird: '#10B981',
+                            fish: '#06B6D4',
+                            other: '#F59E0B',
+                        }
+                    },
+                    animation: {
+                        'float': 'float 6s ease-in-out infinite',
+                        'pulse-slow': 'pulse 4s ease-in-out infinite',
+                        'bounce-slow': 'bounce 3s ease-in-out infinite',
+                        'gradient': 'gradient 8s ease infinite',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        @keyframes float {
+
+            0%,
+            100% {
+                transform: translateY(0px);
+            }
+
+            50% {
+                transform: translateY(-20px);
+            }
+        }
+
+        @keyframes gradient {
+            0% {
+                background-position: 0% 50%;
+            }
+
+            50% {
+                background-position: 100% 50%;
+            }
+
+            100% {
+                background-position: 0% 50%;
+            }
+        }
+
+        .gradient-bg {
+            background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
+            background-size: 400% 400%;
+            animation: gradient 15s ease infinite;
+        }
+
+        .glass {
+            background: rgba(255, 255, 255, 0.25);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.18);
+        }
+
+        .card-hover {
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .card-hover:hover {
+            transform: translateY(-8px) scale(1.02);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+        }
+
+        .pet-card {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .pet-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.5s;
+        }
+
+        .pet-card:hover::before {
+            left: 100%;
+        }
+
+        .text-gradient {
+            background: linear-gradient(135deg, #f7a21e 0%, #e73c7e 50%, #23a6d5 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+    </style>
+</head>
+
+<body class="font-sans bg-gray-50 text-gray-900">
+    <!-- Navigation -->
+    <nav class="fixed top-0 left-0 right-0 z-50 glass">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <!-- Logo -->
+                <a href="/" class="flex items-center gap-2">
+                    <div
+                        class="w-10 h-10 bg-gradient-to-br from-primary-400 to-primary-600 rounded-xl flex items-center justify-center">
+                        <span class="text-2xl">🐾</span>
+                    </div>
+                    <span class="text-xl font-bold text-gradient">Pet Tashkent</span>
+                </a>
+
+                <!-- Desktop Menu -->
+                <div class="hidden md:flex items-center gap-8">
+                    <a href="/" class="text-gray-700 hover:text-primary-500 font-medium transition-colors">Bosh
+                        sahifa</a>
+                    <a href="pets.html"
+                        class="text-gray-700 hover:text-primary-500 font-medium transition-colors">Hayvonlar</a>
+                    <a href="clinics.html"
+                        class="text-gray-700 hover:text-primary-500 font-medium transition-colors">Veterinarlar</a>
+                    <a href="donation.html"
+                        class="text-gray-700 hover:text-primary-500 font-medium transition-colors">Xayriya</a>
+                </div>
+
+                <!-- Auth Buttons -->
+                <div class="flex items-center gap-3">
+                    <a href="login.html" id="loginBtn"
+                        class="hidden md:block px-4 py-2 text-gray-700 hover:text-primary-500 font-medium transition-colors">Kirish</a>
+                    <a href="add-pet.html"
+                        class="px-5 py-2.5 bg-gradient-to-r from-primary-500 to-primary-600 text-white rounded-xl font-medium hover:shadow-lg hover:shadow-primary-300/50 transition-all duration-300">
+                        + Hayvon qo'shish
+                    </a>
+                    <!-- Mobile Menu Button -->
+                    <button class="md:hidden p-2 text-gray-600" onclick="toggleMobileMenu()">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M4 6h16M4 12h16M4 18h16"></path>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mobile Menu -->
+        <div id="mobileMenu" class="hidden md:hidden bg-white border-t">
+            <div class="px-4 py-4 space-y-3">
+                <a href="/" class="block py-2 text-gray-700 font-medium">Bosh sahifa</a>
+                <a href="pets.html" class="block py-2 text-gray-700 font-medium">Hayvonlar</a>
+                <a href="clinics.html" class="block py-2 text-gray-700 font-medium">Veterinarlar</a>
+                <a href="donation.html" class="block py-2 text-gray-700 font-medium">Xayriya</a>
+                <a href="login.html" class="block py-2 text-gray-700 font-medium">Kirish</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="relative min-h-screen flex items-center justify-center gradient-bg overflow-hidden pt-16">
+        <!-- Animated Background Elements -->
+        <div class="absolute inset-0 overflow-hidden">
+            <div class="absolute top-20 left-10 text-8xl animate-float opacity-20">🐕</div>
+            <div class="absolute top-40 right-20 text-7xl animate-float opacity-20" style="animation-delay: 1s">🐈</div>
+            <div class="absolute bottom-32 left-1/4 text-6xl animate-float opacity-20" style="animation-delay: 2s">🐦
+            </div>
+            <div class="absolute bottom-20 right-1/3 text-8xl animate-float opacity-20" style="animation-delay: 3s">🐾
+            </div>
+            <div class="absolute top-1/3 left-1/2 text-5xl animate-bounce-slow opacity-20"
+                style="animation-delay: 0.5s">❤️</div>
+        </div>
+
+        <div class="relative z-10 text-center px-4">
+            <div class="glass rounded-3xl p-8 md:p-12 max-w-4xl mx-auto">
+                <h1 class="text-4xl md:text-6xl font-extrabold text-white mb-6 leading-tight">
+                    Shahar hayvonlariga <br>
+                    <span class="text-yellow-300">yangi uy</span> toping
+                </h1>
+                <p class="text-xl md:text-2xl text-white/90 mb-8 max-w-2xl mx-auto">
+                    Hayvon sotish, xarid qilish, vaqtinchalik asrash, bepul berish va veterinariya xizmatlari — barchasi
+                    bir joyda
+                </p>
+
+                <!-- CTA Buttons -->
+                <div class="flex flex-wrap justify-center gap-4 mb-12">
+                    <a href="pets.html"
+                        class="px-8 py-4 bg-white text-primary-600 rounded-2xl font-bold text-lg hover:bg-yellow-300 transition-all duration-300 shadow-xl hover:shadow-2xl hover:scale-105">
+                        🔍 Hayvonlarni ko'rish
+                    </a>
+                    <a href="add-pet.html"
+                        class="px-8 py-4 bg-primary-600 text-white rounded-2xl font-bold text-lg hover:bg-primary-700 transition-all duration-300 shadow-xl hover:shadow-2xl hover:scale-105 border-2 border-white/30">
+                        ➕ E'lon qo'shish
+                    </a>
+                </div>
+
+                <!-- Quick Stats -->
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                    <div class="glass rounded-xl p-4 text-center">
+                        <div class="text-3xl font-bold text-white" id="statPets">0</div>
+                        <div class="text-white/80 text-sm">Hayvonlar</div>
+                    </div>
+                    <div class="glass rounded-xl p-4 text-center">
+                        <div class="text-3xl font-bold text-white" id="statClinics">0</div>
+                        <div class="text-white/80 text-sm">Klinikalar</div>
+                    </div>
+                    <div class="glass rounded-xl p-4 text-center">
+                        <div class="text-3xl font-bold text-white" id="statUsers">0</div>
+                        <div class="text-white/80 text-sm">Foydalanuvchilar</div>
+                    </div>
+                    <div class="glass rounded-xl p-4 text-center">
+                        <div class="text-3xl font-bold text-white" id="statDonations">0</div>
+                        <div class="text-white/80 text-sm">Xayriya (so'm)</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Scroll Indicator -->
+        <div class="absolute bottom-8 left-1/2 -translate-x-1/2 animate-bounce">
+            <svg class="w-8 h-8 text-white/60" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3">
+                </path>
+            </svg>
+        </div>
+    </section>
+
+    <!-- Categories Section -->
+    <section class="py-20 bg-white">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl md:text-4xl font-bold text-gray-900 mb-4">Hayvon turini tanlang</h2>
+                <p class="text-gray-600 text-lg">Qidirayotgan hayvon turingizni tanlang</p>
+            </div>
+
+            <div class="grid grid-cols-2 md:grid-cols-5 gap-6">
+                <a href="pets.html?type=dog" class="group card-hover">
+                    <div
+                        class="bg-gradient-to-br from-purple-100 to-purple-50 rounded-3xl p-8 text-center border-2 border-transparent hover:border-purple-300">
+                        <div class="text-6xl mb-4 group-hover:scale-110 transition-transform">🐕</div>
+                        <h3 class="text-xl font-semibold text-gray-800">Itlar</h3>
+                        <p class="text-gray-500 text-sm mt-1" id="dogCount">0 ta</p>
+                    </div>
+                </a>
+                <a href="pets.html?type=cat" class="group card-hover">
+                    <div
+                        class="bg-gradient-to-br from-pink-100 to-pink-50 rounded-3xl p-8 text-center border-2 border-transparent hover:border-pink-300">
+                        <div class="text-6xl mb-4 group-hover:scale-110 transition-transform">🐈</div>
+                        <h3 class="text-xl font-semibold text-gray-800">Mushuklar</h3>
+                        <p class="text-gray-500 text-sm mt-1" id="catCount">0 ta</p>
+                    </div>
+                </a>
+                <a href="pets.html?type=bird" class="group card-hover">
+                    <div
+                        class="bg-gradient-to-br from-green-100 to-green-50 rounded-3xl p-8 text-center border-2 border-transparent hover:border-green-300">
+                        <div class="text-6xl mb-4 group-hover:scale-110 transition-transform">🦜</div>
+                        <h3 class="text-xl font-semibold text-gray-800">Qushlar</h3>
+                        <p class="text-gray-500 text-sm mt-1" id="birdCount">0 ta</p>
+                    </div>
+                </a>
+                <a href="pets.html?type=fish" class="group card-hover">
+                    <div
+                        class="bg-gradient-to-br from-cyan-100 to-cyan-50 rounded-3xl p-8 text-center border-2 border-transparent hover:border-cyan-300">
+                        <div class="text-6xl mb-4 group-hover:scale-110 transition-transform">🐠</div>
+                        <h3 class="text-xl font-semibold text-gray-800">Baliqlar</h3>
+                        <p class="text-gray-500 text-sm mt-1" id="fishCount">0 ta</p>
+                    </div>
+                </a>
+                <a href="pets.html?type=other" class="group card-hover">
+                    <div
+                        class="bg-gradient-to-br from-amber-100 to-amber-50 rounded-3xl p-8 text-center border-2 border-transparent hover:border-amber-300">
+                        <div class="text-6xl mb-4 group-hover:scale-110 transition-transform">🐰</div>
+                        <h3 class="text-xl font-semibold text-gray-800">Boshqalar</h3>
+                        <p class="text-gray-500 text-sm mt-1" id="otherCount">0 ta</p>
+                    </div>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Featured Pets Section -->
+    <section class="py-20 bg-gray-50">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="flex items-center justify-between mb-12">
+                <div>
+                    <h2 class="text-3xl md:text-4xl font-bold text-gray-900 mb-2">Oxirgi qo'shilgan hayvonlar</h2>
+                    <p class="text-gray-600">Eng yangi e'lonlar</p>
+                </div>
+                <a href="pets.html"
+                    class="hidden md:flex items-center gap-2 text-primary-500 font-semibold hover:text-primary-600 transition-colors">
+                    Barchasini ko'rish
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M17 8l4 4m0 0l-4 4m4-4H3"></path>
+                    </svg>
+                </a>
+            </div>
+
+            <div id="featuredPets" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                <!-- Pets will be loaded here -->
+                <div class="col-span-full text-center py-12">
+                    <div
+                        class="animate-spin inline-block w-8 h-8 border-4 border-primary-500 border-t-transparent rounded-full">
+                    </div>
+                    <p class="text-gray-500 mt-4">Yuklanmoqda...</p>
+                </div>
+            </div>
+
+            <div class="mt-8 text-center md:hidden">
+                <a href="pets.html"
+                    class="inline-flex items-center gap-2 px-6 py-3 bg-primary-500 text-white rounded-xl font-semibold">
+                    Barcha hayvonlarni ko'rish
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M17 8l4 4m0 0l-4 4m4-4H3"></path>
+                    </svg>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Services Section -->
+    <section class="py-20 bg-white">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl md:text-4xl font-bold text-gray-900 mb-4">Bizning xizmatlar</h2>
+                <p class="text-gray-600 text-lg">Hayvonlar va ularning egalari uchun to'liq ekotizim</p>
+            </div>
+
+            <div class="grid md:grid-cols-3 gap-8">
+                <div
+                    class="card-hover bg-gradient-to-br from-blue-50 to-indigo-50 rounded-3xl p-8 border border-blue-100">
+                    <div class="w-16 h-16 bg-blue-500 rounded-2xl flex items-center justify-center text-3xl mb-6">
+                        🏠
+                    </div>
+                    <h3 class="text-2xl font-bold text-gray-900 mb-3">Hayvon sotish/xarid</h3>
+                    <p class="text-gray-600 mb-4">Hayvonlarni sotish yoki yangi uy hayvoni topish uchun platformamizdan
+                        foydalaning.</p>
+                    <a href="pets.html"
+                        class="text-blue-500 font-semibold hover:text-blue-600 inline-flex items-center gap-1">
+                        Ko'rish →
+                    </a>
+                </div>
+
+                <div
+                    class="card-hover bg-gradient-to-br from-pink-50 to-rose-50 rounded-3xl p-8 border border-pink-100">
+                    <div class="w-16 h-16 bg-pink-500 rounded-2xl flex items-center justify-center text-3xl mb-6">
+                        🏥
+                    </div>
+                    <h3 class="text-2xl font-bold text-gray-900 mb-3">Veterinar klinikalar</h3>
+                    <p class="text-gray-600 mb-4">Yaqin atrofdagi eng yaxshi veterinariya klinikalarini toping va
+                        bog'laning.</p>
+                    <a href="clinics.html"
+                        class="text-pink-500 font-semibold hover:text-pink-600 inline-flex items-center gap-1">
+                        Xaritada ko'rish →
+                    </a>
+                </div>
+
+                <div
+                    class="card-hover bg-gradient-to-br from-yellow-50 to-orange-50 rounded-3xl p-8 border border-yellow-100">
+                    <div class="w-16 h-16 bg-yellow-500 rounded-2xl flex items-center justify-center text-3xl mb-6">
+                        ❤️
+                    </div>
+                    <h3 class="text-2xl font-bold text-gray-900 mb-3">Xayriya qilish</h3>
+                    <p class="text-gray-600 mb-4">Priyutlardagi hayvonlarga yordam bering. Har bir so'm muhim!</p>
+                    <a href="donation.html"
+                        class="text-yellow-600 font-semibold hover:text-yellow-700 inline-flex items-center gap-1">
+                        Xayriya qilish →
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="py-20 gradient-bg">
+        <div class="max-w-4xl mx-auto px-4 text-center">
+            <h2 class="text-3xl md:text-5xl font-bold text-white mb-6">
+                Hayvonlaringiz uchun e'lon bering
+            </h2>
+            <p class="text-xl text-white/90 mb-8">
+                20 000+ foydalanuvchi ichidan hayvonlaringiz uchun yangi uy toping
+            </p>
+            <div class="flex flex-wrap justify-center gap-4">
+                <a href="add-pet.html"
+                    class="px-8 py-4 bg-white text-primary-600 rounded-2xl font-bold text-lg hover:bg-yellow-300 transition-all duration-300 shadow-xl">
+                    Bepul e'lon berish
+                </a>
+                <a href="https://t.me/PetTashkentBot" target="_blank"
+                    class="px-8 py-4 bg-[#0088cc] text-white rounded-2xl font-bold text-lg hover:bg-[#006699] transition-all duration-300 shadow-xl flex items-center gap-2">
+                    <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+                        <path
+                            d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.562 8.161c-.18.716-3.026 10.327-3.026 10.327-.237.951-.879 1.188-1.411.742 0 0-2.638-1.945-3.548-2.738-.282-.273-.336-.512-.074-.819.631-.693 4.001-3.656 4.001-3.656s.471-.335-.113-.465c-.189-.042-2.724 1.584-4.684 2.917-.497.336-1.053.3-1.543.13l-2.168-.671s-.666-.262-.073-.768c.148-.126.297-.213.516-.32 2.259-1.043 7.634-3.125 8.289-3.382.656-.257 1.298.098 1.834.703z" />
+                    </svg>
+                    Telegram Bot
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-gray-900 text-white py-16">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="grid md:grid-cols-4 gap-8 mb-12">
+                <div>
+                    <div class="flex items-center gap-2 mb-4">
+                        <div
+                            class="w-10 h-10 bg-gradient-to-br from-primary-400 to-primary-600 rounded-xl flex items-center justify-center">
+                            <span class="text-2xl">🐾</span>
+                        </div>
+                        <span class="text-xl font-bold">Pet Tashkent</span>
+                    </div>
+                    <p class="text-gray-400 text-sm">
+                        Toshkent shahridagi hayvonlar uchun yagona platforma. 2024 yildan beri xizmat ko'rsatamiz.
+                    </p>
+                </div>
+
+                <div>
+                    <h4 class="font-semibold mb-4">Sahifalar</h4>
+                    <ul class="space-y-2 text-gray-400">
+                        <li><a href="/" class="hover:text-white transition-colors">Bosh sahifa</a></li>
+                        <li><a href="pets.html" class="hover:text-white transition-colors">Hayvonlar</a></li>
+                        <li><a href="clinics.html" class="hover:text-white transition-colors">Veterinar klinikalar</a>
+                        </li>
+                        <li><a href="donation.html" class="hover:text-white transition-colors">Xayriya</a></li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h4 class="font-semibold mb-4">Xizmatlar</h4>
+                    <ul class="space-y-2 text-gray-400">
+                        <li><a href="pets.html?status=selling" class="hover:text-white transition-colors">Hayvon
+                                sotish</a></li>
+                        <li><a href="pets.html?status=free" class="hover:text-white transition-colors">Bepul berish</a>
+                        </li>
+                        <li><a href="pets.html?status=foster" class="hover:text-white transition-colors">Vaqtinchalik
+                                asrash</a></li>
+                        <li><a href="pets.html?status=adoption" class="hover:text-white transition-colors">Adoptsiya</a>
+                        </li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h4 class="font-semibold mb-4">Bog'lanish</h4>
+                    <ul class="space-y-2 text-gray-400">
+                        <li>📞 +998 90 123 45 67</li>
+                        <li>✉️ info@pettashkent.uz</li>
+                        <li>📍 Toshkent, O'zbekiston</li>
+                    </ul>
+                    <div class="flex gap-3 mt-4">
+                        <a href="https://t.me/PetTashkentBot"
+                            class="w-10 h-10 bg-gray-800 rounded-lg flex items-center justify-center hover:bg-[#0088cc] transition-colors">
+                            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                                <path
+                                    d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.562 8.161c-.18.716-3.026 10.327-3.026 10.327-.237.951-.879 1.188-1.411.742 0 0-2.638-1.945-3.548-2.738-.282-.273-.336-.512-.074-.819.631-.693 4.001-3.656 4.001-3.656s.471-.335-.113-.465c-.189-.042-2.724 1.584-4.684 2.917-.497.336-1.053.3-1.543.13l-2.168-.671s-.666-.262-.073-.768c.148-.126.297-.213.516-.32 2.259-1.043 7.634-3.125 8.289-3.382.656-.257 1.298.098 1.834.703z" />
+                            </svg>
+                        </a>
+                        <a href="#"
+                            class="w-10 h-10 bg-gray-800 rounded-lg flex items-center justify-center hover:bg-pink-600 transition-colors">
+                            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                                <path
+                                    d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z" />
+                            </svg>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="border-t border-gray-800 pt-8 text-center text-gray-500 text-sm">
+                <p>© 2024 Pet Tashkent. Barcha huquqlar himoyalangan.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="js/main.js"></script>
+    <script>
+        function toggleMobileMenu() {
+            const menu = document.getElementById('mobileMenu');
+            menu.classList.toggle('hidden');
+        }
+
+        // Load featured pets and stats on page load
+        document.addEventListener('DOMContentLoaded', async () => {
+            // Load featured pets
+            try {
+                const petsRes = await fetch(`${API_BASE}/api/pets/featured`);
+                if (petsRes.ok) {
+                    const data = await petsRes.json();
+                    displayFeaturedPets(data.pets);
+                    // Count by type
+                    countPetsByType(data.pets);
+                } else {
+                    throw new Error('API error');
+                }
+            } catch (error) {
+                console.log('Using demo pets');
+                displayFeaturedPets(getDemoPets());
+                // Demo category counts
+                document.getElementById('dogCount').textContent = '45 ta';
+                document.getElementById('catCount').textContent = '38 ta';
+                document.getElementById('birdCount').textContent = '22 ta';
+                document.getElementById('fishCount').textContent = '15 ta';
+                document.getElementById('otherCount').textContent = '7 ta';
+            }
+
+            // Load all pets to count by type
+            try {
+                const allPetsRes = await fetch(`${API_BASE}/api/pets/list?per_page=100`);
+                if (allPetsRes.ok) {
+                    const data = await allPetsRes.json();
+                    countPetsByType(data.pets);
+                    // Update stats
+                    animateCounter('statPets', data.total || data.pets.length);
+                }
+            } catch (e) { }
+
+            // Load stats
+            try {
+                const statsRes = await fetch(`${API_BASE}/api/donations/public-stats`);
+                if (statsRes.ok) {
+                    const stats = await statsRes.json();
+                    animateCounter('statDonations', stats.total_amount || 0);
+                    animateCounter('statUsers', stats.donor_count || 100);
+                }
+            } catch (e) {
+                animateCounter('statPets', 127);
+                animateCounter('statClinics', 23);
+                animateCounter('statUsers', 1450);
+                animateCounter('statDonations', 5800000);
+            }
+
+            // Load clinics count
+            try {
+                const clinicsRes = await fetch(`${API_BASE}/api/clinics/list`);
+                if (clinicsRes.ok) {
+                    const data = await clinicsRes.json();
+                    animateCounter('statClinics', data.clinics?.length || 3);
+                }
+            } catch (e) {
+                animateCounter('statClinics', 23);
+            }
+        });
+
+        function countPetsByType(pets) {
+            const counts = { dog: 0, cat: 0, bird: 0, fish: 0, other: 0 };
+            pets.forEach(pet => {
+                if (counts.hasOwnProperty(pet.pet_type)) {
+                    counts[pet.pet_type]++;
+                } else {
+                    counts.other++;
+                }
+            });
+            document.getElementById('dogCount').textContent = counts.dog + ' ta';
+            document.getElementById('catCount').textContent = counts.cat + ' ta';
+            document.getElementById('birdCount').textContent = counts.bird + ' ta';
+            document.getElementById('fishCount').textContent = counts.fish + ' ta';
+            document.getElementById('otherCount').textContent = counts.other + ' ta';
+        }
+
+        function displayFeaturedPets(pets) {
+            const container = document.getElementById('featuredPets');
+            if (!pets || pets.length === 0) {
+                container.innerHTML = `
+                    <div class="col-span-full text-center py-12">
+                        <div class="text-6xl mb-4">🐾</div>
+                        <p class="text-gray-500">Hozircha e'lonlar yo'q</p>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = pets.map(pet => createPetCard(pet)).join('');
+        }
+
+        function createPetCard(pet) {
+            const typeEmoji = {
+                'dog': '🐕',
+                'cat': '🐈',
+                'bird': '🦜',
+                'fish': '🐠',
+                'other': '🐰'
+            };
+
+            const statusBadge = {
+                'selling': { text: 'Sotiladi', class: 'bg-blue-100 text-blue-700' },
+                'free': { text: 'Bepul', class: 'bg-green-100 text-green-700' },
+                'foster': { text: 'Foster', class: 'bg-purple-100 text-purple-700' },
+                'adoption': { text: 'Adoptsiya', class: 'bg-pink-100 text-pink-700' }
+            };
+
+            const badge = statusBadge[pet.status] || statusBadge['selling'];
+            const emoji = typeEmoji[pet.pet_type] || '🐾';
+            const imageUrl = pet.image ? `/static/uploads/${pet.image}` : `https://placehold.co/400x300/f3f4f6/a3a3a3?text=${emoji}`;
+
+            return `
+                <a href="pet-detail.html?id=${pet.id}" class="pet-card card-hover bg-white rounded-2xl overflow-hidden shadow-sm border border-gray-100">
+                    <div class="relative h-48 bg-gray-100">
+                        <img src="${imageUrl}" alt="${pet.name}" class="w-full h-full object-cover" onerror="this.src='https://placehold.co/400x300/f3f4f6/a3a3a3?text=${emoji}'">
+                        <div class="absolute top-3 left-3">
+                            <span class="px-3 py-1 ${badge.class} rounded-full text-sm font-medium">${badge.text}</span>
+                        </div>
+                        <div class="absolute top-3 right-3 w-10 h-10 bg-white/80 backdrop-blur rounded-full flex items-center justify-center text-xl">
+                            ${emoji}
+                        </div>
+                    </div>
+                    <div class="p-4">
+                        <h3 class="font-semibold text-lg text-gray-900 mb-1">${pet.name}</h3>
+                        <p class="text-gray-500 text-sm mb-3">${pet.breed || pet.pet_type} • ${pet.age || 'Yoshi noma\'lum'}</p>
+                        <div class="flex items-center justify-between">
+                            <span class="text-primary-600 font-bold text-lg">
+                                ${pet.price > 0 ? formatPrice(pet.price) : 'Bepul'}
+                            </span>
+                            <span class="text-gray-400 text-sm flex items-center gap-1">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                                </svg>
+                                ${pet.location || 'Toshkent'}
+                            </span>
+                        </div>
+                    </div>
+                </a>
+            `;
+        }
+
+        function getDemoPets() {
+            return [
+                { id: 1, name: 'Charlie', pet_type: 'dog', breed: 'Golden Retriever', age: '2 yil', status: 'selling', price: 3500000, location: 'Yunusobod' },
+                { id: 2, name: 'Luna', pet_type: 'cat', breed: 'British Shorthair', age: '1 yil', status: 'free', price: 0, location: 'Mirzo Ulug\'bek' },
+                { id: 3, name: 'Mango', pet_type: 'bird', breed: 'Kanareka', age: '6 oy', status: 'selling', price: 500000, location: 'Chilonzor' },
+                { id: 4, name: 'Max', pet_type: 'dog', breed: 'Labrador', age: '3 yil', status: 'foster', price: 0, location: 'Sergeli' },
+                { id: 5, name: 'Whiskers', pet_type: 'cat', breed: 'Persian', age: '8 oy', status: 'adoption', price: 0, location: 'Yakkasaroy' },
+                { id: 6, name: 'Rio', pet_type: 'fish', breed: 'Goldfish', age: '1 yil', status: 'selling', price: 150000, location: 'Mirobod' },
+                { id: 7, name: 'Buddy', pet_type: 'dog', breed: 'Poodle', age: '4 yil', status: 'free', price: 0, location: 'Shayxontohur' },
+                { id: 8, name: 'Simba', pet_type: 'cat', breed: 'Maine Coon', age: '2 yil', status: 'selling', price: 5000000, location: 'Olmazor' }
+            ];
+        }
+
+        function animateCounter(id, target) {
+            const element = document.getElementById(id);
+            let current = 0;
+            const increment = target / 50;
+            const timer = setInterval(() => {
+                current += increment;
+                if (current >= target) {
+                    current = target;
+                    clearInterval(timer);
+                }
+                if (target >= 1000000) {
+                    element.textContent = (current / 1000000).toFixed(1) + 'M';
+                } else if (target >= 1000) {
+                    element.textContent = Math.floor(current).toLocaleString();
+                } else {
+                    element.textContent = Math.floor(current);
+                }
+            }, 30);
+        }
+    </script>
+</body>
+
+</html>

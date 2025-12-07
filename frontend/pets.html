@@ -1,0 +1,477 @@
+<!DOCTYPE html>
+<html lang="uz">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hayvonlar - Pet Tashkent</title>
+    <meta name="description" content="Toshkentdagi barcha hayvonlar - itlar, mushuklar, qushlar va boshqalar">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: { sans: ['Inter', 'sans-serif'] },
+                    colors: {
+                        primary: { 50: '#fef3e2', 100: '#fde6c4', 200: '#fbd18a', 300: '#f9b84e', 400: '#f7a21e', 500: '#e8860c', 600: '#c96507', 700: '#a7470a', 800: '#883810', 900: '#712f10' }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .card-hover {
+            transition: all 0.3s ease;
+        }
+
+        .card-hover:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.1);
+        }
+
+        .filter-chip {
+            transition: all 0.2s ease;
+        }
+
+        .filter-chip.active {
+            background: linear-gradient(135deg, #f7a21e, #e8860c);
+            color: white;
+        }
+    </style>
+</head>
+
+<body class="font-sans bg-gray-50">
+    <!-- Navigation -->
+    <nav class="sticky top-0 z-50 bg-white/80 backdrop-blur-lg border-b border-gray-100">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <a href="/" class="flex items-center gap-2">
+                    <div
+                        class="w-10 h-10 bg-gradient-to-br from-primary-400 to-primary-600 rounded-xl flex items-center justify-center">
+                        <span class="text-2xl">🐾</span>
+                    </div>
+                    <span
+                        class="text-xl font-bold bg-gradient-to-r from-primary-500 to-pink-500 bg-clip-text text-transparent">Pet
+                        Tashkent</span>
+                </a>
+                <div class="hidden md:flex items-center gap-8">
+                    <a href="/" class="text-gray-600 hover:text-primary-500 font-medium">Bosh sahifa</a>
+                    <a href="pets.html" class="text-primary-500 font-semibold">Hayvonlar</a>
+                    <a href="clinics.html" class="text-gray-600 hover:text-primary-500 font-medium">Veterinarlar</a>
+                    <a href="donation.html" class="text-gray-600 hover:text-primary-500 font-medium">Xayriya</a>
+                </div>
+                <div class="flex items-center gap-3">
+                    <a href="login.html" id="loginBtn"
+                        class="hidden md:block px-4 py-2 text-gray-700 hover:text-primary-500 font-medium">Kirish</a>
+                    <a href="add-pet.html"
+                        class="px-4 py-2 bg-gradient-to-r from-primary-500 to-primary-600 text-white rounded-xl font-medium hover:shadow-lg transition-all">
+                        + Hayvon qo'shish
+                    </a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <main class="max-w-7xl mx-auto px-4 py-8">
+        <!-- Search & Filters Header -->
+        <div class="mb-8">
+            <h1 class="text-3xl md:text-4xl font-bold text-gray-900 mb-2">Hayvonlar</h1>
+            <p class="text-gray-600">Barcha mavjud hayvonlar ro'yxati</p>
+        </div>
+
+        <div class="flex flex-col lg:flex-row gap-8">
+            <!-- Filters Sidebar -->
+            <aside class="lg:w-72 flex-shrink-0">
+                <div class="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 sticky top-24">
+                    <h2 class="text-lg font-semibold text-gray-900 mb-4">Filtrlar</h2>
+
+                    <!-- Search -->
+                    <div class="mb-6">
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Qidiruv</label>
+                        <div class="relative">
+                            <input type="text" id="searchInput" placeholder="Nom bo'yicha qidirish..."
+                                class="w-full px-4 py-3 pl-10 border border-gray-200 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all">
+                            <svg class="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" fill="none"
+                                stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                            </svg>
+                        </div>
+                    </div>
+
+                    <!-- Type Filter -->
+                    <div class="mb-6">
+                        <label class="block text-sm font-medium text-gray-700 mb-3">Hayvon turi</label>
+                        <div class="flex flex-wrap gap-2">
+                            <button data-type="all"
+                                class="filter-chip active px-4 py-2 bg-gray-100 rounded-full text-sm font-medium">Barchasi</button>
+                            <button data-type="dog"
+                                class="filter-chip px-4 py-2 bg-gray-100 rounded-full text-sm font-medium">🐕
+                                Itlar</button>
+                            <button data-type="cat"
+                                class="filter-chip px-4 py-2 bg-gray-100 rounded-full text-sm font-medium">🐈
+                                Mushuklar</button>
+                            <button data-type="bird"
+                                class="filter-chip px-4 py-2 bg-gray-100 rounded-full text-sm font-medium">🦜
+                                Qushlar</button>
+                            <button data-type="fish"
+                                class="filter-chip px-4 py-2 bg-gray-100 rounded-full text-sm font-medium">🐠
+                                Baliqlar</button>
+                            <button data-type="other"
+                                class="filter-chip px-4 py-2 bg-gray-100 rounded-full text-sm font-medium">🐰
+                                Boshqa</button>
+                        </div>
+                    </div>
+
+                    <!-- Status Filter -->
+                    <div class="mb-6">
+                        <label class="block text-sm font-medium text-gray-700 mb-3">Holati</label>
+                        <div class="space-y-2">
+                            <label class="flex items-center gap-3 cursor-pointer">
+                                <input type="radio" name="status" value="all" checked
+                                    class="w-4 h-4 text-primary-500 focus:ring-primary-500">
+                                <span class="text-gray-700">Barchasi</span>
+                            </label>
+                            <label class="flex items-center gap-3 cursor-pointer">
+                                <input type="radio" name="status" value="selling"
+                                    class="w-4 h-4 text-primary-500 focus:ring-primary-500">
+                                <span class="text-gray-700">Sotiladi</span>
+                            </label>
+                            <label class="flex items-center gap-3 cursor-pointer">
+                                <input type="radio" name="status" value="free"
+                                    class="w-4 h-4 text-primary-500 focus:ring-primary-500">
+                                <span class="text-gray-700">Bepul beriladi</span>
+                            </label>
+                            <label class="flex items-center gap-3 cursor-pointer">
+                                <input type="radio" name="status" value="foster"
+                                    class="w-4 h-4 text-primary-500 focus:ring-primary-500">
+                                <span class="text-gray-700">Foster (vaqtinchalik)</span>
+                            </label>
+                            <label class="flex items-center gap-3 cursor-pointer">
+                                <input type="radio" name="status" value="adoption"
+                                    class="w-4 h-4 text-primary-500 focus:ring-primary-500">
+                                <span class="text-gray-700">Adoptsiya</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Price Filter -->
+                    <div class="mb-6">
+                        <label class="block text-sm font-medium text-gray-700 mb-3">Narx oralig'i</label>
+                        <div class="flex gap-2">
+                            <input type="number" id="minPrice" placeholder="Min"
+                                class="w-1/2 px-3 py-2 border border-gray-200 rounded-lg text-sm">
+                            <input type="number" id="maxPrice" placeholder="Max"
+                                class="w-1/2 px-3 py-2 border border-gray-200 rounded-lg text-sm">
+                        </div>
+                    </div>
+
+                    <!-- Location Filter -->
+                    <div class="mb-6">
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Joylashuv</label>
+                        <select id="locationFilter"
+                            class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-primary-500">
+                            <option value="">Barcha tumanlar</option>
+                            <option value="Yunusobod">Yunusobod</option>
+                            <option value="Mirzo Ulug'bek">Mirzo Ulug'bek</option>
+                            <option value="Chilonzor">Chilonzor</option>
+                            <option value="Sergeli">Sergeli</option>
+                            <option value="Yakkasaroy">Yakkasaroy</option>
+                            <option value="Shayxontohur">Shayxontohur</option>
+                            <option value="Olmazor">Olmazor</option>
+                            <option value="Mirobod">Mirobod</option>
+                        </select>
+                    </div>
+
+                    <button onclick="applyFilters()"
+                        class="w-full py-3 bg-gradient-to-r from-primary-500 to-primary-600 text-white rounded-xl font-medium hover:shadow-lg transition-all">
+                        Filtrlarni qo'llash
+                    </button>
+                    <button onclick="resetFilters()"
+                        class="w-full py-3 mt-2 bg-gray-100 text-gray-700 rounded-xl font-medium hover:bg-gray-200 transition-all">
+                        Tozalash
+                    </button>
+                </div>
+            </aside>
+
+            <!-- Pets Grid -->
+            <div class="flex-1">
+                <!-- Sort & Results Count -->
+                <div class="flex items-center justify-between mb-6">
+                    <p class="text-gray-600"><span id="resultsCount">0</span> ta natija topildi</p>
+                    <select id="sortSelect"
+                        class="px-4 py-2 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-primary-500"
+                        onchange="applyFilters()">
+                        <option value="newest">Eng yangi</option>
+                        <option value="price_low">Narx: pastdan yuqoriga</option>
+                        <option value="price_high">Narx: yuqoridan pastga</option>
+                    </select>
+                </div>
+
+                <!-- Pets Container -->
+                <div id="petsContainer" class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6">
+                    <div class="col-span-full text-center py-12">
+                        <div
+                            class="animate-spin inline-block w-8 h-8 border-4 border-primary-500 border-t-transparent rounded-full">
+                        </div>
+                        <p class="text-gray-500 mt-4">Yuklanmoqda...</p>
+                    </div>
+                </div>
+
+                <!-- Pagination -->
+                <div id="pagination" class="flex justify-center gap-2 mt-8"></div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-gray-900 text-white py-12 mt-16">
+        <div class="max-w-7xl mx-auto px-4 text-center">
+            <div class="flex items-center justify-center gap-2 mb-4">
+                <div
+                    class="w-10 h-10 bg-gradient-to-br from-primary-400 to-primary-600 rounded-xl flex items-center justify-center">
+                    <span class="text-2xl">🐾</span>
+                </div>
+                <span class="text-xl font-bold">Pet Tashkent</span>
+            </div>
+            <p class="text-gray-400">© 2024 Pet Tashkent. Barcha huquqlar himoyalangan.</p>
+        </div>
+    </footer>
+
+    <script src="js/main.js"></script>
+    <script>
+        let currentPage = 1;
+        let allPets = [];
+        let filteredPets = [];
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            // Check URL params for initial filters
+            const params = new URLSearchParams(window.location.search);
+            const type = params.get('type');
+            const status = params.get('status');
+
+            if (type) {
+                document.querySelectorAll('[data-type]').forEach(btn => {
+                    btn.classList.toggle('active', btn.dataset.type === type);
+                });
+            }
+
+            if (status) {
+                document.querySelector(`input[name="status"][value="${status}"]`)?.click();
+            }
+
+            loadPets();
+
+            // Setup filter chip clicks
+            document.querySelectorAll('[data-type]').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    document.querySelectorAll('[data-type]').forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    applyFilters();
+                });
+            });
+
+            // Status radio changes
+            document.querySelectorAll('input[name="status"]').forEach(radio => {
+                radio.addEventListener('change', applyFilters);
+            });
+
+            // Search input
+            document.getElementById('searchInput').addEventListener('input', debounce(applyFilters, 300));
+        });
+
+        async function loadPets() {
+            try {
+                const response = await fetch(`${API_BASE}/api/pets/list?per_page=100`);
+                if (response.ok) {
+                    const data = await response.json();
+                    allPets = data.pets;
+                }
+            } catch (error) {
+                console.log('Using demo data');
+                allPets = getDemoPets();
+            }
+
+            applyFilters();
+        }
+
+        function applyFilters() {
+            const type = document.querySelector('[data-type].active')?.dataset.type || 'all';
+            const status = document.querySelector('input[name="status"]:checked')?.value || 'all';
+            const search = document.getElementById('searchInput').value.toLowerCase();
+            const minPrice = parseFloat(document.getElementById('minPrice').value) || 0;
+            const maxPrice = parseFloat(document.getElementById('maxPrice').value) || Infinity;
+            const location = document.getElementById('locationFilter').value;
+            const sort = document.getElementById('sortSelect').value;
+
+            filteredPets = allPets.filter(pet => {
+                if (type !== 'all' && pet.pet_type !== type) return false;
+                if (status !== 'all' && pet.status !== status) return false;
+                if (search && !pet.name.toLowerCase().includes(search)) return false;
+                if (pet.price < minPrice || pet.price > maxPrice) return false;
+                if (location && pet.location !== location) return false;
+                return true;
+            });
+
+            // Sort
+            if (sort === 'price_low') {
+                filteredPets.sort((a, b) => a.price - b.price);
+            } else if (sort === 'price_high') {
+                filteredPets.sort((a, b) => b.price - a.price);
+            }
+
+            currentPage = 1;
+            displayPets();
+        }
+
+        function displayPets() {
+            const perPage = 12;
+            const start = (currentPage - 1) * perPage;
+            const end = start + perPage;
+            const pagePets = filteredPets.slice(start, end);
+
+            document.getElementById('resultsCount').textContent = filteredPets.length;
+
+            const container = document.getElementById('petsContainer');
+
+            if (pagePets.length === 0) {
+                container.innerHTML = `
+                    <div class="col-span-full text-center py-12">
+                        <div class="text-6xl mb-4">🔍</div>
+                        <h3 class="text-xl font-semibold text-gray-800 mb-2">Hayvonlar topilmadi</h3>
+                        <p class="text-gray-500">Filtrlarni o'zgartirib ko'ring</p>
+                    </div>
+                `;
+                document.getElementById('pagination').innerHTML = '';
+                return;
+            }
+
+            container.innerHTML = pagePets.map(pet => createPetCard(pet)).join('');
+            displayPagination();
+        }
+
+        function createPetCard(pet) {
+            const typeEmoji = { 'dog': '🐕', 'cat': '🐈', 'bird': '🦜', 'fish': '🐠', 'other': '🐰' };
+            const statusBadge = {
+                'selling': { text: 'Sotiladi', class: 'bg-blue-100 text-blue-700' },
+                'free': { text: 'Bepul', class: 'bg-green-100 text-green-700' },
+                'foster': { text: 'Foster', class: 'bg-purple-100 text-purple-700' },
+                'adoption': { text: 'Adoptsiya', class: 'bg-pink-100 text-pink-700' }
+            };
+
+            const badge = statusBadge[pet.status] || statusBadge['selling'];
+            const emoji = typeEmoji[pet.pet_type] || '🐾';
+            const imageUrl = pet.image ? `${API_BASE}/static/uploads/${pet.image}` : `https://placehold.co/400x300/f5f5f5/a3a3a3?text=${emoji}`;
+
+            return `
+                <a href="pet-detail.html?id=${pet.id}" class="card-hover bg-white rounded-2xl overflow-hidden shadow-sm border border-gray-100 group">
+                    <div class="relative h-52 bg-gray-100 overflow-hidden">
+                        <img src="${imageUrl}" alt="${pet.name}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" onerror="this.src='https://placehold.co/400x300/f5f5f5/a3a3a3?text=${emoji}'">
+                        <div class="absolute top-3 left-3">
+                            <span class="px-3 py-1 ${badge.class} rounded-full text-sm font-medium">${badge.text}</span>
+                        </div>
+                        <div class="absolute top-3 right-3 w-10 h-10 bg-white/90 backdrop-blur rounded-full flex items-center justify-center text-xl shadow-sm">
+                            ${emoji}
+                        </div>
+                    </div>
+                    <div class="p-5">
+                        <h3 class="font-semibold text-lg text-gray-900 mb-1">${pet.name}</h3>
+                        <p class="text-gray-500 text-sm mb-3">${pet.breed || pet.pet_type} • ${pet.age || "Yoshi noma'lum"}</p>
+                        <div class="flex items-center justify-between">
+                            <span class="text-primary-600 font-bold text-lg">
+                                ${pet.price > 0 ? formatPrice(pet.price) : 'Bepul'}
+                            </span>
+                            <span class="text-gray-400 text-sm flex items-center gap-1">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
+                                </svg>
+                                ${pet.location || 'Toshkent'}
+                            </span>
+                        </div>
+                    </div>
+                </a>
+            `;
+        }
+
+        function displayPagination() {
+            const perPage = 12;
+            const totalPages = Math.ceil(filteredPets.length / perPage);
+
+            if (totalPages <= 1) {
+                document.getElementById('pagination').innerHTML = '';
+                return;
+            }
+
+            let html = '';
+
+            // Previous button
+            if (currentPage > 1) {
+                html += `<button onclick="goToPage(${currentPage - 1})" class="px-4 py-2 bg-white border border-gray-200 rounded-lg hover:bg-gray-50">←</button>`;
+            }
+
+            // Page numbers
+            for (let i = 1; i <= totalPages; i++) {
+                if (i === currentPage) {
+                    html += `<button class="px-4 py-2 bg-primary-500 text-white rounded-lg">${i}</button>`;
+                } else if (i === 1 || i === totalPages || (i >= currentPage - 1 && i <= currentPage + 1)) {
+                    html += `<button onclick="goToPage(${i})" class="px-4 py-2 bg-white border border-gray-200 rounded-lg hover:bg-gray-50">${i}</button>`;
+                } else if (i === currentPage - 2 || i === currentPage + 2) {
+                    html += `<span class="px-2">...</span>`;
+                }
+            }
+
+            // Next button
+            if (currentPage < totalPages) {
+                html += `<button onclick="goToPage(${currentPage + 1})" class="px-4 py-2 bg-white border border-gray-200 rounded-lg hover:bg-gray-50">→</button>`;
+            }
+
+            document.getElementById('pagination').innerHTML = html;
+        }
+
+        function goToPage(page) {
+            currentPage = page;
+            displayPets();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function resetFilters() {
+            document.getElementById('searchInput').value = '';
+            document.getElementById('minPrice').value = '';
+            document.getElementById('maxPrice').value = '';
+            document.getElementById('locationFilter').value = '';
+            document.querySelector('[data-type="all"]').click();
+            document.querySelector('input[name="status"][value="all"]').checked = true;
+            applyFilters();
+        }
+
+        function debounce(func, wait) {
+            let timeout;
+            return function (...args) {
+                clearTimeout(timeout);
+                timeout = setTimeout(() => func.apply(this, args), wait);
+            };
+        }
+
+        function getDemoPets() {
+            return [
+                { id: 1, name: 'Charlie', pet_type: 'dog', breed: 'Golden Retriever', age: '2 yil', status: 'selling', price: 3500000, location: 'Yunusobod' },
+                { id: 2, name: 'Luna', pet_type: 'cat', breed: 'British Shorthair', age: '1 yil', status: 'free', price: 0, location: "Mirzo Ulug'bek" },
+                { id: 3, name: 'Mango', pet_type: 'bird', breed: 'Kanareka', age: '6 oy', status: 'selling', price: 500000, location: 'Chilonzor' },
+                { id: 4, name: 'Max', pet_type: 'dog', breed: 'Labrador', age: '3 yil', status: 'foster', price: 0, location: 'Sergeli' },
+                { id: 5, name: 'Whiskers', pet_type: 'cat', breed: 'Persian', age: '8 oy', status: 'adoption', price: 0, location: 'Yakkasaroy' },
+                { id: 6, name: 'Rio', pet_type: 'fish', breed: 'Goldfish', age: '1 yil', status: 'selling', price: 150000, location: 'Mirobod' },
+                { id: 7, name: 'Buddy', pet_type: 'dog', breed: 'Poodle', age: '4 yil', status: 'free', price: 0, location: 'Shayxontohur' },
+                { id: 8, name: 'Simba', pet_type: 'cat', breed: 'Maine Coon', age: '2 yil', status: 'selling', price: 5000000, location: 'Olmazor' },
+                { id: 9, name: 'Rocky', pet_type: 'dog', breed: 'German Shepherd', age: '1.5 yil', status: 'selling', price: 4000000, location: 'Yunusobod' },
+                { id: 10, name: 'Bella', pet_type: 'cat', breed: 'Siamese', age: '3 yil', status: 'foster', price: 0, location: 'Chilonzor' },
+                { id: 11, name: 'Tweety', pet_type: 'bird', breed: "To'ti", age: '2 yil', status: 'selling', price: 800000, location: 'Sergeli' },
+                { id: 12, name: 'Nemo', pet_type: 'fish', breed: 'Clownfish', age: '6 oy', status: 'selling', price: 200000, location: 'Mirobod' }
+            ];
+        }
+    </script>
+</body>
+
+</html>

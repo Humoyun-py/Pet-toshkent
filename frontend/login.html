@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="uz">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kirish - Pet Tashkent</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+    </style>
+</head>
+
+<body
+    class="bg-gradient-to-br from-orange-100 via-pink-50 to-purple-100 min-h-screen flex items-center justify-center p-4">
+    <div class="w-full max-w-md">
+        <div class="text-center mb-8">
+            <a href="/" class="inline-flex items-center gap-2">
+                <span class="text-4xl">🐾</span>
+                <span
+                    class="text-2xl font-bold bg-gradient-to-r from-orange-500 to-pink-500 bg-clip-text text-transparent">Pet
+                    Tashkent</span>
+            </a>
+        </div>
+
+        <div class="bg-white rounded-3xl shadow-2xl p-8">
+            <h1 class="text-2xl font-bold text-center mb-2">Tizimga kirish</h1>
+            <p class="text-gray-500 text-center mb-8">Hisobingizga kiring</p>
+
+            <form id="loginForm">
+                <div class="mb-6">
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Email</label>
+                    <input type="email" name="email" required placeholder="email@example.com"
+                        class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-transparent">
+                </div>
+
+                <div class="mb-6">
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Parol</label>
+                    <input type="password" name="password" required placeholder="••••••••"
+                        class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-transparent">
+                </div>
+
+                <button type="submit"
+                    class="w-full py-4 bg-gradient-to-r from-orange-500 to-orange-600 text-white rounded-xl font-semibold text-lg hover:shadow-lg transition-all">
+                    Kirish
+                </button>
+            </form>
+
+            <div class="mt-6 text-center">
+                <p class="text-gray-500">Hisobingiz yo'qmi? <a href="register.html"
+                        class="text-orange-500 font-semibold hover:underline">Ro'yxatdan o'tish</a></p>
+            </div>
+
+            <div class="mt-6 pt-6 border-t text-center">
+                <p class="text-gray-400 text-sm mb-4">yoki</p>
+                <a href="https://t.me/PetTashkentBot"
+                    class="inline-flex items-center gap-2 px-6 py-3 bg-[#0088cc] text-white rounded-xl font-medium hover:bg-[#006699]">
+                    <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                        <path
+                            d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.562 8.161c-.18.716-3.026 10.327-3.026 10.327-.237.951-.879 1.188-1.411.742 0 0-2.638-1.945-3.548-2.738-.282-.273-.336-.512-.074-.819.631-.693 4.001-3.656 4.001-3.656s.471-.335-.113-.465c-.189-.042-2.724 1.584-4.684 2.917-.497.336-1.053.3-1.543.13l-2.168-.671s-.666-.262-.073-.768c.148-.126.297-.213.516-.32 2.259-1.043 7.634-3.125 8.289-3.382.656-.257 1.298.098 1.834.703z" />
+                    </svg>
+                    Telegram orqali kirish
+                </a>
+            </div>
+        </div>
+
+        <p class="text-center text-gray-400 text-sm mt-6">
+            <a href="/" class="hover:text-gray-600">← Bosh sahifaga qaytish</a>
+        </p>
+    </div>
+
+    <script src="js/main.js"></script>
+    <script>
+        if (isLoggedIn()) window.location.href = '/';
+
+        document.getElementById('loginForm').onsubmit = async e => {
+            e.preventDefault();
+            const form = e.target;
+            const btn = form.querySelector('button');
+            btn.disabled = true;
+            btn.textContent = 'Yuklanmoqda...';
+
+            try {
+                const res = await fetch(`${API_BASE}/api/auth/login`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        email: form.email.value,
+                        password: form.password.value
+                    })
+                });
+                const data = await res.json();
+
+                if (res.ok) {
+                    setToken(data.token);
+                    setUser(data.user);
+                    showToast('Muvaffaqiyatli!', 'success');
+                    const redirect = new URLSearchParams(window.location.search).get('redirect') || '/';
+                    setTimeout(() => window.location.href = redirect, 500);
+                } else {
+                    throw new Error(data.error);
+                }
+            } catch (err) {
+                showToast(err.message || 'Xatolik', 'error');
+                btn.disabled = false;
+                btn.textContent = 'Kirish';
+            }
+        };
+    </script>
+</body>
+
+</html>

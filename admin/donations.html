@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="uz">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Xayriyalar - Admin Panel</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+    </style>
+</head>
+
+<body class="bg-gray-100 min-h-screen">
+    <aside class="fixed left-0 top-0 h-full w-64 bg-gray-900 text-white">
+        <div class="p-6">
+            <div class="flex items-center gap-3 mb-8"><span class="text-3xl">🐾</span><span
+                    class="text-xl font-bold">Pet Admin</span></div>
+            <nav class="space-y-2">
+                <a href="index.html" class="flex items-center gap-3 px-4 py-3 hover:bg-gray-800 rounded-xl">📊
+                    Dashboard</a>
+                <a href="users.html" class="flex items-center gap-3 px-4 py-3 hover:bg-gray-800 rounded-xl">👥
+                    Foydalanuvchilar</a>
+                <a href="pets.html" class="flex items-center gap-3 px-4 py-3 hover:bg-gray-800 rounded-xl">🐕
+                    Hayvonlar</a>
+                <a href="clinics.html" class="flex items-center gap-3 px-4 py-3 hover:bg-gray-800 rounded-xl">🏥
+                    Klinikalar</a>
+                <a href="donations.html" class="flex items-center gap-3 px-4 py-3 bg-orange-500 rounded-xl">❤️
+                    Xayriyalar</a>
+            </nav>
+        </div>
+    </aside>
+
+    <main class="ml-64 p-8">
+        <h1 class="text-3xl font-bold mb-8">❤️ Xayriyalar statistikasi</h1>
+
+        <!-- Stats -->
+        <div class="grid grid-cols-4 gap-6 mb-8">
+            <div class="bg-gradient-to-br from-pink-500 to-rose-500 text-white rounded-2xl p-6">
+                <p class="text-pink-100">Jami xayriya</p>
+                <p class="text-3xl font-bold" id="totalAmount">0</p>
+            </div>
+            <div class="bg-gradient-to-br from-blue-500 to-indigo-500 text-white rounded-2xl p-6">
+                <p class="text-blue-100">Bugun</p>
+                <p class="text-3xl font-bold" id="todayAmount">0</p>
+            </div>
+            <div class="bg-gradient-to-br from-green-500 to-emerald-500 text-white rounded-2xl p-6">
+                <p class="text-green-100">Bu hafta</p>
+                <p class="text-3xl font-bold" id="weekAmount">0</p>
+            </div>
+            <div class="bg-gradient-to-br from-purple-500 to-violet-500 text-white rounded-2xl p-6">
+                <p class="text-purple-100">Bu oy</p>
+                <p class="text-3xl font-bold" id="monthAmount">0</p>
+            </div>
+        </div>
+
+        <!-- Donations Table -->
+        <div class="bg-white rounded-2xl shadow-sm overflow-hidden">
+            <div class="p-6 border-b flex items-center justify-between">
+                <h2 class="text-lg font-bold">Barcha xayriyalar</h2>
+                <select id="statusFilter" class="px-4 py-2 border rounded-xl" onchange="loadDonations()">
+                    <option value="">Barchasi</option>
+                    <option value="completed">Tugallangan</option>
+                    <option value="pending">Kutilmoqda</option>
+                </select>
+            </div>
+            <table class="w-full">
+                <thead class="bg-gray-50">
+                    <tr>
+                        <th class="px-6 py-4 text-left text-sm font-medium text-gray-500">ID</th>
+                        <th class="px-6 py-4 text-left text-sm font-medium text-gray-500">Donor</th>
+                        <th class="px-6 py-4 text-left text-sm font-medium text-gray-500">Miqdor</th>
+                        <th class="px-6 py-4 text-left text-sm font-medium text-gray-500">To'lov usuli</th>
+                        <th class="px-6 py-4 text-left text-sm font-medium text-gray-500">Status</th>
+                        <th class="px-6 py-4 text-left text-sm font-medium text-gray-500">Sana</th>
+                    </tr>
+                </thead>
+                <tbody id="donationsTable" class="divide-y"></tbody>
+            </table>
+        </div>
+    </main>
+
+    <script src="../js/main.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => { loadStats(); loadDonations(); });
+
+        async function loadStats() {
+            try {
+                const res = await fetch(`${API_BASE}/api/donations/stats`, { headers: { 'Authorization': `Bearer ${getToken()}` } });
+                if (res.ok) {
+                    const data = await res.json();
+                    document.getElementById('totalAmount').textContent = formatAmount(data.total_amount);
+                    document.getElementById('todayAmount').textContent = formatAmount(data.today_amount);
+                    document.getElementById('weekAmount').textContent = formatAmount(data.week_amount);
+                    document.getElementById('monthAmount').textContent = formatAmount(data.month_amount);
+                }
+            } catch (e) {
+                document.getElementById('totalAmount').textContent = '5.8M';
+                document.getElementById('todayAmount').textContent = '150K';
+                document.getElementById('weekAmount').textContent = '850K';
+                document.getElementById('monthAmount').textContent = '2.1M';
+            }
+        }
+
+        async function loadDonations() {
+            let donations = [];
+            try {
+                const status = document.getElementById('statusFilter').value;
+                const res = await fetch(`${API_BASE}/api/donations/all?status=${status}`, { headers: { 'Authorization': `Bearer ${getToken()}` } });
+                if (res.ok) donations = (await res.json()).donations;
+            } catch (e) {
+                donations = [
+                    { id: 1, donor_name: 'Sardor', amount: 100000, payment_method: 'click', status: 'completed', created_at: '2024-12-07' },
+                    { id: 2, donor_name: 'Anonim', amount: 250000, payment_method: 'payme', status: 'completed', created_at: '2024-12-06' },
+                    { id: 3, donor_name: 'Malika', amount: 500000, payment_method: 'click', status: 'completed', created_at: '2024-12-05' },
+                    { id: 4, donor_name: 'Jasur', amount: 50000, payment_method: 'payme', status: 'pending', created_at: '2024-12-04' }
+                ];
+            }
+            displayDonations(donations);
+        }
+
+        function displayDonations(donations) {
+            document.getElementById('donationsTable').innerHTML = donations.map(d => `
+                <tr class="hover:bg-gray-50">
+                    <td class="px-6 py-4 text-gray-500">#${d.id}</td>
+                    <td class="px-6 py-4 font-medium">${d.donor_name || 'Anonim'}</td>
+                    <td class="px-6 py-4 font-bold text-green-600">${d.amount.toLocaleString()} so'm</td>
+                    <td class="px-6 py-4"><span class="px-3 py-1 ${d.payment_method === 'click' ? 'bg-blue-100 text-blue-700' : 'bg-cyan-100 text-cyan-700'} rounded-full text-xs">${d.payment_method?.toUpperCase()}</span></td>
+                    <td class="px-6 py-4"><span class="px-3 py-1 ${d.status === 'completed' ? 'bg-green-100 text-green-700' : 'bg-yellow-100 text-yellow-700'} rounded-full text-xs">${d.status}</span></td>
+                    <td class="px-6 py-4 text-gray-500">${new Date(d.created_at).toLocaleDateString()}</td>
+                </tr>
+            `).join('');
+        }
+
+        function formatAmount(n) {
+            if (n >= 1000000) return (n / 1000000).toFixed(1) + 'M';
+            if (n >= 1000) return (n / 1000).toFixed(0) + 'K';
+            return n.toLocaleString();
+        }
+    </script>
+</body>
+
+</html>

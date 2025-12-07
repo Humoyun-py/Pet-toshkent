@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="uz">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ro'yxatdan o'tish - Pet Tashkent</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+    </style>
+</head>
+
+<body
+    class="bg-gradient-to-br from-orange-100 via-pink-50 to-purple-100 min-h-screen flex items-center justify-center p-4">
+    <div class="w-full max-w-md">
+        <div class="text-center mb-8">
+            <a href="/" class="inline-flex items-center gap-2">
+                <span class="text-4xl">🐾</span>
+                <span
+                    class="text-2xl font-bold bg-gradient-to-r from-orange-500 to-pink-500 bg-clip-text text-transparent">Pet
+                    Tashkent</span>
+            </a>
+        </div>
+
+        <div class="bg-white rounded-3xl shadow-2xl p-8">
+            <h1 class="text-2xl font-bold text-center mb-2">Ro'yxatdan o'tish</h1>
+            <p class="text-gray-500 text-center mb-8">Yangi hisob yarating</p>
+
+            <form id="registerForm">
+                <div class="mb-5">
+                    <label class="block text-sm font-medium text-gray-700 mb-2">To'liq ism *</label>
+                    <input type="text" name="full_name" required placeholder="Ismingiz"
+                        class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-orange-500">
+                </div>
+
+                <div class="mb-5">
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Email *</label>
+                    <input type="email" name="email" required placeholder="email@example.com"
+                        class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-orange-500">
+                </div>
+
+                <div class="mb-5">
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Telefon</label>
+                    <input type="tel" name="phone" placeholder="+998 90 123 45 67"
+                        class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-orange-500">
+                </div>
+
+                <div class="mb-5">
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Parol *</label>
+                    <input type="password" name="password" required minlength="6" placeholder="Kamida 6 ta belgi"
+                        class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-orange-500">
+                </div>
+
+                <div class="mb-6">
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Parolni tasdiqlang *</label>
+                    <input type="password" name="confirm_password" required placeholder="Parolni qayta kiriting"
+                        class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-orange-500">
+                </div>
+
+                <button type="submit"
+                    class="w-full py-4 bg-gradient-to-r from-orange-500 to-orange-600 text-white rounded-xl font-semibold text-lg hover:shadow-lg">
+                    Ro'yxatdan o'tish
+                </button>
+            </form>
+
+            <p class="mt-6 text-center text-gray-500">
+                Hisobingiz bormi? <a href="login.html" class="text-orange-500 font-semibold hover:underline">Kirish</a>
+            </p>
+        </div>
+    </div>
+
+    <script src="js/main.js"></script>
+    <script>
+        if (isLoggedIn()) window.location.href = '/';
+
+        document.getElementById('registerForm').onsubmit = async e => {
+            e.preventDefault();
+            const form = e.target;
+
+            if (form.password.value !== form.confirm_password.value) {
+                showToast('Parollar mos kelmaydi', 'error');
+                return;
+            }
+
+            const btn = form.querySelector('button');
+            btn.disabled = true;
+            btn.textContent = 'Yuklanmoqda...';
+
+            try {
+                const res = await fetch(`${API_BASE}/api/auth/register`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        full_name: form.full_name.value,
+                        email: form.email.value,
+                        phone: form.phone.value,
+                        password: form.password.value
+                    })
+                });
+                const data = await res.json();
+
+                if (res.ok) {
+                    setToken(data.token);
+                    setUser(data.user);
+                    showToast('Muvaffaqiyatli!', 'success');
+                    setTimeout(() => window.location.href = '/', 500);
+                } else {
+                    throw new Error(data.error);
+                }
+            } catch (err) {
+                showToast(err.message || 'Xatolik', 'error');
+                btn.disabled = false;
+                btn.textContent = "Ro'yxatdan o'tish";
+            }
+        };
+    </script>
+</body>
+
+</html>

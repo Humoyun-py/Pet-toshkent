@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="uz">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Klinikalar - Admin Panel</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+    </style>
+</head>
+
+<body class="bg-gray-100 min-h-screen">
+    <aside class="fixed left-0 top-0 h-full w-64 bg-gray-900 text-white">
+        <div class="p-6">
+            <div class="flex items-center gap-3 mb-8"><span class="text-3xl">🐾</span><span
+                    class="text-xl font-bold">Pet Admin</span></div>
+            <nav class="space-y-2">
+                <a href="index.html" class="flex items-center gap-3 px-4 py-3 hover:bg-gray-800 rounded-xl">📊
+                    Dashboard</a>
+                <a href="users.html" class="flex items-center gap-3 px-4 py-3 hover:bg-gray-800 rounded-xl">👥
+                    Foydalanuvchilar</a>
+                <a href="pets.html" class="flex items-center gap-3 px-4 py-3 hover:bg-gray-800 rounded-xl">🐕
+                    Hayvonlar</a>
+                <a href="clinics.html" class="flex items-center gap-3 px-4 py-3 bg-orange-500 rounded-xl">🏥
+                    Klinikalar</a>
+                <a href="donations.html" class="flex items-center gap-3 px-4 py-3 hover:bg-gray-800 rounded-xl">❤️
+                    Xayriyalar</a>
+            </nav>
+        </div>
+    </aside>
+
+    <main class="ml-64 p-8">
+        <div class="flex items-center justify-between mb-8">
+            <h1 class="text-3xl font-bold">🏥 Klinikalar</h1>
+            <button onclick="showAddModal()" class="px-6 py-3 bg-orange-500 text-white rounded-xl hover:bg-orange-600">+
+                Klinika qo'shish</button>
+        </div>
+
+        <div id="clinicsGrid" class="grid md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
+    </main>
+
+    <!-- Add Modal -->
+    <div id="addModal" class="fixed inset-0 bg-black/50 hidden items-center justify-center z-50">
+        <div class="bg-white rounded-2xl p-8 w-full max-w-lg">
+            <h2 class="text-xl font-bold mb-6">Yangi klinika</h2>
+            <form id="clinicForm">
+                <input type="text" name="name" placeholder="Klinika nomi *" required
+                    class="w-full px-4 py-3 border rounded-xl mb-4">
+                <input type="text" name="address" placeholder="Manzil *" required
+                    class="w-full px-4 py-3 border rounded-xl mb-4">
+                <div class="grid grid-cols-2 gap-4 mb-4">
+                    <input type="number" step="any" name="lat" placeholder="Latitude *" required
+                        class="px-4 py-3 border rounded-xl">
+                    <input type="number" step="any" name="lng" placeholder="Longitude *" required
+                        class="px-4 py-3 border rounded-xl">
+                </div>
+                <input type="tel" name="phone" placeholder="Telefon" class="w-full px-4 py-3 border rounded-xl mb-4">
+                <input type="text" name="working_hours" placeholder="Ish vaqti"
+                    class="w-full px-4 py-3 border rounded-xl mb-4">
+                <div class="flex gap-4">
+                    <button type="button" onclick="hideModal()" class="flex-1 py-3 bg-gray-200 rounded-xl">Bekor
+                        qilish</button>
+                    <button type="submit" class="flex-1 py-3 bg-orange-500 text-white rounded-xl">Saqlash</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="../js/main.js"></script>
+    <script>
+        let clinics = [];
+
+        document.addEventListener('DOMContentLoaded', loadClinics);
+
+        async function loadClinics() {
+            try {
+                const res = await fetch(`${API_BASE}/api/clinics/list`);
+                if (res.ok) clinics = (await res.json()).clinics;
+            } catch (e) {
+                clinics = [
+                    { id: 1, name: 'Tashkent Veterinary', address: "Amir Temur ko'chasi", phone: '+998712345678', working_hours: '09:00-18:00', rating: 4.8 },
+                    { id: 2, name: 'Pet Care Center', address: "Navoiy ko'chasi", phone: '+998712345679', working_hours: '24/7', rating: 4.6 }
+                ];
+            }
+            displayClinics();
+        }
+
+        function displayClinics() {
+            document.getElementById('clinicsGrid').innerHTML = clinics.map(c => `
+                <div class="bg-white rounded-2xl p-6 shadow-sm">
+                    <div class="flex items-start justify-between mb-4">
+                        <div class="w-12 h-12 bg-pink-100 rounded-xl flex items-center justify-center text-2xl">🏥</div>
+                        <span class="text-yellow-500">⭐ ${c.rating || 4.5}</span>
+                    </div>
+                    <h3 class="font-bold text-lg mb-2">${c.name}</h3>
+                    <p class="text-gray-500 text-sm mb-2">${c.address}</p>
+                    <p class="text-gray-500 text-sm mb-4">📞 ${c.phone || '-'} • 🕐 ${c.working_hours || '-'}</p>
+                    <div class="flex gap-2">
+                        <button onclick="editClinic(${c.id})" class="flex-1 py-2 bg-blue-100 text-blue-600 rounded-lg text-sm">Tahrirlash</button>
+                        <button onclick="deleteClinic(${c.id})" class="flex-1 py-2 bg-red-100 text-red-600 rounded-lg text-sm">O'chirish</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function showAddModal() { document.getElementById('addModal').classList.remove('hidden'); document.getElementById('addModal').classList.add('flex'); }
+        function hideModal() { document.getElementById('addModal').classList.add('hidden'); document.getElementById('addModal').classList.remove('flex'); }
+
+        document.getElementById('clinicForm').onsubmit = async e => {
+            e.preventDefault();
+            const form = e.target;
+            const data = Object.fromEntries(new FormData(form));
+            try {
+                await fetch(`${API_BASE}/api/clinics/add`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${getToken()}` },
+                    body: JSON.stringify(data)
+                });
+            } catch (e) { }
+            hideModal();
+            form.reset();
+            loadClinics();
+        };
+
+        async function deleteClinic(id) {
+            if (confirm("O'chirishni tasdiqlaysizmi?")) {
+                await fetch(`${API_BASE}/api/clinics/${id}`, { method: 'DELETE', headers: { 'Authorization': `Bearer ${getToken()}` } });
+                loadClinics();
+            }
+        }
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="uz">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Xayriya - Pet Tashkent</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+    </style>
+</head>
+
+<body class="bg-gray-50">
+    <nav class="sticky top-0 z-50 bg-white/80 backdrop-blur border-b">
+        <div class="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between">
+            <a href="/" class="flex items-center gap-2">
+                <span class="text-2xl">🐾</span>
+                <span class="font-bold text-xl">Pet Tashkent</span>
+            </a>
+            <div class="hidden md:flex gap-8">
+                <a href="/" class="text-gray-600">Bosh sahifa</a>
+                <a href="pets.html" class="text-gray-600">Hayvonlar</a>
+                <a href="clinics.html" class="text-gray-600">Veterinarlar</a>
+                <a href="donation.html" class="text-orange-500 font-semibold">Xayriya</a>
+            </div>
+        </div>
+    </nav>
+
+    <main class="max-w-4xl mx-auto px-4 py-12">
+        <!-- Hero -->
+        <div class="text-center mb-12">
+            <div class="text-6xl mb-4">❤️</div>
+            <h1 class="text-4xl font-extrabold mb-4">Hayvonlarga yordam bering</h1>
+            <p class="text-xl text-gray-600">Sizning xayriyangiz priyutlardagi hayvonlarga oziq-ovqat, davolash va
+                boshpana ta'minlashga yordam beradi</p>
+        </div>
+
+        <!-- Stats -->
+        <div class="grid grid-cols-3 gap-6 mb-12">
+            <div class="bg-gradient-to-br from-pink-500 to-rose-500 text-white rounded-2xl p-6 text-center">
+                <div class="text-3xl font-bold" id="totalDonations">5.8M</div>
+                <div class="text-pink-100">Jami xayriya</div>
+            </div>
+            <div class="bg-gradient-to-br from-purple-500 to-indigo-500 text-white rounded-2xl p-6 text-center">
+                <div class="text-3xl font-bold" id="donorCount">127</div>
+                <div class="text-purple-100">Xayriyachilar</div>
+            </div>
+            <div class="bg-gradient-to-br from-orange-500 to-amber-500 text-white rounded-2xl p-6 text-center">
+                <div class="text-3xl font-bold" id="petsHelped">89</div>
+                <div class="text-orange-100">Yordam olgan hayvonlar</div>
+            </div>
+        </div>
+
+        <!-- Donation Form -->
+        <div class="bg-white rounded-3xl shadow-xl p-8">
+            <h2 class="text-2xl font-bold text-center mb-8">Xayriya qilish</h2>
+
+            <!-- Amount Selection -->
+            <div class="mb-8">
+                <label class="block text-sm font-medium mb-4">Miqdorni tanlang</label>
+                <div class="grid grid-cols-4 gap-3">
+                    <button type="button" onclick="setAmount(50000)"
+                        class="amount-btn py-4 border-2 rounded-xl font-semibold hover:border-orange-500 hover:bg-orange-50">50,000</button>
+                    <button type="button" onclick="setAmount(100000)"
+                        class="amount-btn py-4 border-2 rounded-xl font-semibold hover:border-orange-500 hover:bg-orange-50 border-orange-500 bg-orange-50">100,000</button>
+                    <button type="button" onclick="setAmount(200000)"
+                        class="amount-btn py-4 border-2 rounded-xl font-semibold hover:border-orange-500 hover:bg-orange-50">200,000</button>
+                    <button type="button" onclick="setAmount(500000)"
+                        class="amount-btn py-4 border-2 rounded-xl font-semibold hover:border-orange-500 hover:bg-orange-50">500,000</button>
+                </div>
+                <div class="mt-4">
+                    <input type="number" id="customAmount" placeholder="Boshqa miqdor (so'm)"
+                        class="w-full px-4 py-3 border rounded-xl" onchange="setAmount(this.value)">
+                </div>
+            </div>
+
+            <!-- Donor Info -->
+            <div class="grid md:grid-cols-2 gap-6 mb-8">
+                <div>
+                    <label class="block text-sm font-medium mb-2">Ismingiz</label>
+                    <input type="text" id="donorName" placeholder="Ismingiz" class="w-full px-4 py-3 border rounded-xl">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium mb-2">Telefon</label>
+                    <input type="tel" id="donorPhone" placeholder="+998 90 123 45 67"
+                        class="w-full px-4 py-3 border rounded-xl">
+                </div>
+            </div>
+
+            <div class="mb-8">
+                <label class="block text-sm font-medium mb-2">Xabar (ixtiyoriy)</label>
+                <textarea id="donorMessage" rows="2" placeholder="Hayvonlarga tilaklaringiz..."
+                    class="w-full px-4 py-3 border rounded-xl"></textarea>
+            </div>
+
+            <label class="flex items-center gap-3 mb-8 cursor-pointer">
+                <input type="checkbox" id="isAnonymous" class="w-5 h-5 text-orange-500 rounded">
+                <span>Anonim xayriya qilish</span>
+            </label>
+
+            <!-- Payment Methods -->
+            <div class="mb-8">
+                <label class="block text-sm font-medium mb-4">To'lov usulini tanlang</label>
+                <div class="grid grid-cols-2 gap-4">
+                    <button type="button" onclick="selectPayment('click')"
+                        class="payment-btn p-4 border-2 rounded-xl hover:border-blue-500 flex items-center justify-center gap-3"
+                        data-method="click">
+                        <img src="https://click.uz/click/images/logo-click.svg" alt="Click" class="h-8"
+                            onerror="this.outerHTML='<span class=&quot;text-2xl font-bold text-blue-600&quot;>CLICK</span>'">
+                    </button>
+                    <button type="button" onclick="selectPayment('payme')"
+                        class="payment-btn p-4 border-2 rounded-xl hover:border-cyan-500 flex items-center justify-center gap-3"
+                        data-method="payme">
+                        <img src="https://cdn.payme.uz/logos/payme.svg" alt="Payme" class="h-8"
+                            onerror="this.outerHTML='<span class=&quot;text-2xl font-bold text-cyan-600&quot;>PAYME</span>'">
+                    </button>
+                </div>
+            </div>
+
+            <button onclick="processDonation()"
+                class="w-full py-4 bg-gradient-to-r from-pink-500 to-rose-500 text-white rounded-xl font-semibold text-lg hover:shadow-lg transition-all">
+                ❤️ <span id="donateAmount">100,000</span> so'm xayriya qilish
+            </button>
+        </div>
+
+        <!-- Recent Donations -->
+        <div class="mt-12">
+            <h2 class="text-2xl font-bold mb-6">Oxirgi xayriyalar</h2>
+            <div id="recentDonations" class="space-y-4">
+                <!-- Will load here -->
+            </div>
+        </div>
+    </main>
+
+    <script src="js/main.js"></script>
+    <script>
+        let selectedAmount = 100000;
+        let selectedPayment = 'click';
+
+        function setAmount(amount) {
+            selectedAmount = parseInt(amount);
+            document.getElementById('donateAmount').textContent = selectedAmount.toLocaleString();
+            document.querySelectorAll('.amount-btn').forEach(btn => {
+                btn.classList.remove('border-orange-500', 'bg-orange-50');
+                if (btn.textContent.replace(/,/g, '') == amount) {
+                    btn.classList.add('border-orange-500', 'bg-orange-50');
+                }
+            });
+        }
+
+        function selectPayment(method) {
+            selectedPayment = method;
+            document.querySelectorAll('.payment-btn').forEach(btn => {
+                btn.classList.remove('border-blue-500', 'border-cyan-500', 'bg-blue-50', 'bg-cyan-50');
+                if (btn.dataset.method === method) {
+                    const color = method === 'click' ? 'blue' : 'cyan';
+                    btn.classList.add(`border-${color}-500`, `bg-${color}-50`);
+                }
+            });
+        }
+
+        async function processDonation() {
+            try {
+                const res = await fetch(`${API_BASE}/api/donations/create`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        amount: selectedAmount,
+                        payment_method: selectedPayment,
+                        donor_name: document.getElementById('donorName').value,
+                        donor_phone: document.getElementById('donorPhone').value,
+                        message: document.getElementById('donorMessage').value,
+                        is_anonymous: document.getElementById('isAnonymous').checked
+                    })
+                });
+                const data = await res.json();
+                if (data.payment_link) {
+                    window.location.href = data.payment_link;
+                } else {
+                    showToast('Xayriya uchun rahmat! ❤️', 'success');
+                }
+            } catch (e) {
+                showToast('Demo rejimda ishlayapti', 'info');
+            }
+        }
+
+        // Load recent donations
+        document.addEventListener('DOMContentLoaded', async () => {
+            const donations = [
+                { donor_name: 'Anonim', amount: 200000, created_at: '2024-12-07' },
+                { donor_name: 'Sardor', amount: 100000, created_at: '2024-12-06' },
+                { donor_name: 'Malika', amount: 500000, created_at: '2024-12-05' },
+                { donor_name: 'Anonim', amount: 50000, created_at: '2024-12-04' }
+            ];
+
+            document.getElementById('recentDonations').innerHTML = donations.map(d => `
+                <div class="bg-white rounded-xl p-4 flex items-center justify-between shadow-sm">
+                    <div class="flex items-center gap-4">
+                        <div class="w-12 h-12 bg-pink-100 rounded-full flex items-center justify-center text-xl">❤️</div>
+                        <div>
+                            <div class="font-medium">${d.donor_name}</div>
+                            <div class="text-sm text-gray-500">${d.created_at}</div>
+                        </div>
+                    </div>
+                    <div class="font-bold text-green-600">${d.amount.toLocaleString()} so'm</div>
+                </div>
+            `).join('');
+        });
+    </script>
+</body>
+
+</html>

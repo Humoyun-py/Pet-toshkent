@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="uz">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hayvon qo'shish - Pet Tashkent</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+
+        .upload-zone:hover {
+            border-color: #e8860c;
+            background: #fef3e2;
+        }
+    </style>
+</head>
+
+<body class="bg-gray-50 min-h-screen">
+    <nav class="sticky top-0 z-50 bg-white border-b">
+        <div class="max-w-3xl mx-auto px-4 h-16 flex items-center justify-between">
+            <a href="/" class="flex items-center gap-2">
+                <span class="text-2xl">🐾</span>
+                <span class="font-bold text-xl">Pet Tashkent</span>
+            </a>
+            <a href="pets.html" class="text-gray-600">← Orqaga</a>
+        </div>
+    </nav>
+
+    <main class="max-w-2xl mx-auto px-4 py-8">
+        <h1 class="text-3xl font-bold text-center mb-2">Hayvon e'loni berish</h1>
+        <p class="text-gray-600 text-center mb-8">Hayvonlaringiz uchun yangi uy toping</p>
+
+        <div class="bg-white rounded-2xl shadow-lg p-8">
+            <form id="addPetForm">
+                <div class="grid md:grid-cols-2 gap-6">
+                    <div>
+                        <label class="block text-sm font-medium mb-2">Hayvon nomi *</label>
+                        <input type="text" name="name" required placeholder="Masalan: Charlie"
+                            class="w-full px-4 py-3 border rounded-xl focus:ring-2 focus:ring-orange-500">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium mb-2">Hayvon turi *</label>
+                        <select name="pet_type" required class="w-full px-4 py-3 border rounded-xl">
+                            <option value="">Tanlang</option>
+                            <option value="dog">🐕 It</option>
+                            <option value="cat">🐈 Mushuk</option>
+                            <option value="bird">🦜 Qush</option>
+                            <option value="fish">🐠 Baliq</option>
+                            <option value="other">🐰 Boshqa</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium mb-2">Zoti</label>
+                        <input type="text" name="breed" placeholder="Golden Retriever"
+                            class="w-full px-4 py-3 border rounded-xl">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium mb-2">Yoshi</label>
+                        <input type="text" name="age" placeholder="2 yil" class="w-full px-4 py-3 border rounded-xl">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium mb-2">Jinsi</label>
+                        <select name="gender" class="w-full px-4 py-3 border rounded-xl">
+                            <option value="">Tanlang</option>
+                            <option value="male">Erkak</option>
+                            <option value="female">Urg'ochi</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium mb-2">Joylashuv</label>
+                        <select name="location" class="w-full px-4 py-3 border rounded-xl">
+                            <option value="">Tanlang</option>
+                            <option value="Yunusobod">Yunusobod</option>
+                            <option value="Chilonzor">Chilonzor</option>
+                            <option value="Sergeli">Sergeli</option>
+                            <option value="Mirobod">Mirobod</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="mt-6">
+                    <label class="block text-sm font-medium mb-3">E'lon turi *</label>
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
+                        <label class="cursor-pointer">
+                            <input type="radio" name="status" value="selling" class="sr-only peer" required>
+                            <div
+                                class="p-4 border-2 rounded-xl text-center peer-checked:border-orange-500 peer-checked:bg-orange-50">
+                                <span class="text-2xl">💰</span><br><span class="text-sm">Sotish</span>
+                            </div>
+                        </label>
+                        <label class="cursor-pointer">
+                            <input type="radio" name="status" value="free" class="sr-only peer">
+                            <div
+                                class="p-4 border-2 rounded-xl text-center peer-checked:border-green-500 peer-checked:bg-green-50">
+                                <span class="text-2xl">🎁</span><br><span class="text-sm">Bepul</span>
+                            </div>
+                        </label>
+                        <label class="cursor-pointer">
+                            <input type="radio" name="status" value="foster" class="sr-only peer">
+                            <div
+                                class="p-4 border-2 rounded-xl text-center peer-checked:border-purple-500 peer-checked:bg-purple-50">
+                                <span class="text-2xl">🏠</span><br><span class="text-sm">Foster</span>
+                            </div>
+                        </label>
+                        <label class="cursor-pointer">
+                            <input type="radio" name="status" value="adoption" class="sr-only peer">
+                            <div
+                                class="p-4 border-2 rounded-xl text-center peer-checked:border-pink-500 peer-checked:bg-pink-50">
+                                <span class="text-2xl">❤️</span><br><span class="text-sm">Adoptsiya</span>
+                            </div>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="mt-6" id="priceField">
+                    <label class="block text-sm font-medium mb-2">Narxi (so'm)</label>
+                    <input type="number" name="price" placeholder="0" class="w-full px-4 py-3 border rounded-xl">
+                </div>
+
+                <div class="mt-6">
+                    <label class="block text-sm font-medium mb-2">Tavsif</label>
+                    <textarea name="description" rows="3" class="w-full px-4 py-3 border rounded-xl"></textarea>
+                </div>
+
+                <div class="mt-6">
+                    <label class="block text-sm font-medium mb-2">Rasm</label>
+                    <div class="upload-zone border-2 border-dashed rounded-xl p-6 text-center cursor-pointer"
+                        onclick="document.getElementById('imageInput').click()">
+                        <input type="file" id="imageInput" name="image" accept="image/*" class="hidden">
+                        <p class="text-gray-500">📷 Rasm yuklash uchun bosing</p>
+                        <img id="preview" class="hidden max-h-40 mx-auto mt-4 rounded-lg">
+                    </div>
+                </div>
+
+                <button type="submit"
+                    class="w-full mt-8 py-4 bg-gradient-to-r from-orange-500 to-orange-600 text-white rounded-xl font-semibold text-lg hover:shadow-lg">
+                    E'lon berish
+                </button>
+            </form>
+        </div>
+    </main>
+
+    <script src="js/main.js"></script>
+    <script>
+        document.getElementById('imageInput').onchange = e => {
+            const preview = document.getElementById('preview');
+            preview.src = URL.createObjectURL(e.target.files[0]);
+            preview.classList.remove('hidden');
+        };
+
+        document.getElementById('addPetForm').onsubmit = async e => {
+            e.preventDefault();
+            // Demo mode - no login required
+            // if (!isLoggedIn()) { window.location.href = 'login.html'; return; }
+
+            const formData = new FormData(e.target);
+
+            // Debug: log form data
+            for (let pair of formData.entries()) {
+                console.log(pair[0] + ': ' + pair[1]);
+            }
+
+            try {
+                const res = await fetch(`${API_BASE}/api/pets/add`, {
+                    method: 'POST',
+                    body: formData
+                });
+                const data = await res.json();
+                console.log('Response:', data);
+
+                if (res.ok) {
+                    showToast("E'lon qo'shildi!", 'success');
+                    setTimeout(() => window.location.href = 'pets.html', 1500);
+                } else {
+                    showToast(data.error || 'Xatolik', 'error');
+                }
+            } catch (err) {
+                console.error('Error:', err);
+                showToast('Xatolik', 'error');
+            }
+        };
+    </script>
+</body>
+
+</html>
