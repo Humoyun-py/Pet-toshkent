@@ -7,13 +7,43 @@
     <title>Veterinar Klinikalar - Pet Tashkent</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Leaflet CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <style>
         body {
             font-family: 'Inter', sans-serif;
         }
 
         #map {
-            height: 500px;
+            height: 450px;
+            border-radius: 1rem;
+        }
+
+        .leaflet-popup-content-wrapper {
+            border-radius: 12px;
+        }
+
+        .clinic-marker {
+            background: linear-gradient(135deg, #ec4899, #f43f5e);
+            border-radius: 50%;
+            width: 36px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 18px;
+            box-shadow: 0 4px 12px rgba(236, 72, 153, 0.4);
+            border: 3px solid white;
+        }
+
+        .user-marker {
+            background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            border: 3px solid white;
+            box-shadow: 0 2px 8px rgba(59, 130, 246, 0.5);
         }
     </style>
 </head>
@@ -43,17 +73,15 @@
         <div class="grid lg:grid-cols-3 gap-8">
             <!-- Map -->
             <div class="lg:col-span-2">
-                <div class="bg-white rounded-2xl shadow-lg overflow-hidden">
-                    <div id="map" class="w-full bg-gray-100 flex items-center justify-center">
-                        <div class="text-center p-8">
-                            <div class="text-6xl mb-4">🗺️</div>
-                            <p class="text-gray-500">Xaritani ko'rish uchun Google Maps API kerak</p>
-                            <button onclick="getLocation()"
-                                class="mt-4 px-6 py-3 bg-orange-500 text-white rounded-xl hover:bg-orange-600">
-                                📍 Mening joylashuvim
-                            </button>
-                        </div>
+                <div class="bg-white rounded-2xl shadow-lg overflow-hidden p-4">
+                    <div class="flex items-center justify-between mb-4">
+                        <h2 class="font-semibold">🗺️ Xarita</h2>
+                        <button onclick="getMyLocation()"
+                            class="px-4 py-2 bg-blue-500 text-white text-sm rounded-lg hover:bg-blue-600 flex items-center gap-2">
+                            📍 Mening joylashuvim
+                        </button>
                     </div>
+                    <div id="map" class="w-full"></div>
                 </div>
             </div>
 
@@ -61,8 +89,9 @@
             <div>
                 <div class="bg-white rounded-2xl shadow-lg p-6">
                     <h2 class="font-semibold text-lg mb-4">Klinikalar ro'yxati</h2>
-                    <div id="clinicsList" class="space-y-4">
+                    <div id="clinicsList" class="space-y-3 max-h-[400px] overflow-y-auto">
                         <!-- Loading -->
+                        <div class="text-center py-4 text-gray-500">Yuklanmoqda...</div>
                     </div>
                 </div>
             </div>
@@ -77,12 +106,135 @@
         </div>
     </main>
 
+    <!-- Leaflet JS -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script src="js/main.js"></script>
     <script>
+        let map;
         let clinics = [];
+        let markers = [];
+        let userMarker = null;
 
-        document.addEventListener('DOMContentLoaded', loadClinics);
+        // Initialize map
+        function initMap() {
+            // Tashkent center coordinates
+            map = L.map('map').setView([41.3111, 69.2797], 12);
 
+            // Add OpenStreetMap tiles
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '© OpenStreetMap contributors'
+            }).addTo(map);
+        }
+
+        // Create custom clinic icon
+        function createClinicIcon() {
+            return L.divIcon({
+                className: 'custom-marker',
+                html: '<div class="clinic-marker">🏥</div>',
+                iconSize: [36, 36],
+                iconAnchor: [18, 18],
+                popupAnchor: [0, -20]
+            });
+        }
+
+        // Add clinic markers to map
+        function addClinicMarkers() {
+            markers.forEach(m => map.removeLayer(m));
+            markers = [];
+
+            clinics.forEach(clinic => {
+                if (clinic.lat && clinic.lng) {
+                    const marker = L.marker([clinic.lat, clinic.lng], {
+                        icon: createClinicIcon()
+                    }).addTo(map);
+
+                    marker.bindPopup(`
+                        <div style="min-width: 200px;">
+                            <h3 style="font-weight: bold; margin-bottom: 8px;">${clinic.name}</h3>
+                            <p style="color: #666; font-size: 14px; margin-bottom: 4px;">📍 ${clinic.address}</p>
+                            <p style="color: #666; font-size: 14px; margin-bottom: 4px;">📞 ${clinic.phone || 'N/A'}</p>
+                            <p style="color: #666; font-size: 14px; margin-bottom: 8px;">🕐 ${clinic.working_hours || '09:00-18:00'}</p>
+                            <div style="display: flex; gap: 8px;">
+                                <a href="tel:${clinic.phone}" style="flex: 1; padding: 8px; background: #22c55e; color: white; text-align: center; border-radius: 8px; text-decoration: none; font-size: 12px;">Qo'ng'iroq</a>
+                                <a href="https://www.google.com/maps/dir/?api=1&destination=${clinic.lat},${clinic.lng}" target="_blank" style="flex: 1; padding: 8px; background: #3b82f6; color: white; text-align: center; border-radius: 8px; text-decoration: none; font-size: 12px;">Yo'nalish</a>
+                            </div>
+                        </div>
+                    `);
+
+                    markers.push(marker);
+                }
+            });
+
+            // Fit map to show all markers
+            if (markers.length > 0) {
+                const group = L.featureGroup(markers);
+                map.fitBounds(group.getBounds().pad(0.1));
+            }
+        }
+
+        // Get user's location
+        function getMyLocation() {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(
+                    pos => {
+                        const lat = pos.coords.latitude;
+                        const lng = pos.coords.longitude;
+
+                        // Remove old user marker
+                        if (userMarker) map.removeLayer(userMarker);
+
+                        // Add user marker
+                        userMarker = L.marker([lat, lng], {
+                            icon: L.divIcon({
+                                className: 'user-location',
+                                html: '<div class="user-marker"></div>',
+                                iconSize: [20, 20],
+                                iconAnchor: [10, 10]
+                            })
+                        }).addTo(map);
+
+                        userMarker.bindPopup('<b>Siz shu yerdasiz</b>').openPopup();
+
+                        // Center map on user
+                        map.setView([lat, lng], 14);
+
+                        showToast('Joylashuvingiz aniqlandi!', 'success');
+
+                        // Find nearest clinics
+                        findNearestClinics(lat, lng);
+                    },
+                    () => showToast("Joylashuvni aniqlab bo'lmadi", 'error')
+                );
+            } else {
+                showToast("Brauzeringiz geolokatsiyani qo'llab-quvvatlamaydi", 'error');
+            }
+        }
+
+        // Find nearest clinics
+        function findNearestClinics(userLat, userLng) {
+            clinics.forEach(clinic => {
+                if (clinic.lat && clinic.lng) {
+                    clinic.distance = getDistance(userLat, userLng, clinic.lat, clinic.lng);
+                }
+            });
+
+            clinics.sort((a, b) => (a.distance || 999) - (b.distance || 999));
+            displayClinics();
+        }
+
+        // Calculate distance between two points (Haversine formula)
+        function getDistance(lat1, lon1, lat2, lon2) {
+            const R = 6371; // Earth's radius in km
+            const dLat = (lat2 - lat1) * Math.PI / 180;
+            const dLon = (lon2 - lon1) * Math.PI / 180;
+            const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+                Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
+                Math.sin(dLon / 2) * Math.sin(dLon / 2);
+            const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+            return R * c;
+        }
+
+        // Load clinics from API
         async function loadClinics() {
             try {
                 const res = await fetch(`${API_BASE}/api/clinics/list`);
@@ -94,20 +246,21 @@
                 clinics = getDemoClinics();
             }
             displayClinics();
+            addClinicMarkers();
         }
 
         function displayClinics() {
             const list = document.getElementById('clinicsList');
             const grid = document.getElementById('clinicsGrid');
 
-            list.innerHTML = clinics.slice(0, 5).map(c => `
-                <div class="p-4 bg-gray-50 rounded-xl hover:bg-gray-100 cursor-pointer" onclick="showClinic(${c.id})">
-                    <h3 class="font-semibold">${c.name}</h3>
-                    <p class="text-sm text-gray-500">${c.address}</p>
-                    <div class="flex items-center gap-2 mt-2 text-sm">
+            list.innerHTML = clinics.map(c => `
+                <div class="p-3 bg-gray-50 rounded-xl hover:bg-orange-50 cursor-pointer transition-colors" 
+                     onclick="focusClinic(${c.lat}, ${c.lng})">
+                    <h3 class="font-semibold text-sm">${c.name}</h3>
+                    <p class="text-xs text-gray-500 mt-1">${c.address}</p>
+                    <div class="flex items-center gap-2 mt-2 text-xs">
                         <span class="text-yellow-500">⭐ ${c.rating || 4.5}</span>
-                        <span class="text-gray-400">•</span>
-                        <span class="text-gray-500">${c.phone || 'Telefon mavjud emas'}</span>
+                        ${c.distance ? `<span class="text-blue-500">📍 ${c.distance.toFixed(1)} km</span>` : ''}
                     </div>
                 </div>
             `).join('');
@@ -124,25 +277,26 @@
                     <div class="mt-4 flex items-center gap-4 text-sm">
                         <span class="text-yellow-500">⭐ ${c.rating || 4.5}</span>
                         <span class="text-green-600">🕐 ${c.working_hours || '09:00-18:00'}</span>
+                        ${c.distance ? `<span class="text-blue-500">📍 ${c.distance.toFixed(1)} km</span>` : ''}
                     </div>
                     <div class="mt-4 pt-4 border-t flex gap-2">
                         <a href="tel:${c.phone}" class="flex-1 py-2 bg-green-500 text-white text-center rounded-lg text-sm hover:bg-green-600">📞 Qo'ng'iroq</a>
-                        <button onclick="getDirections(${c.lat}, ${c.lng})" class="flex-1 py-2 bg-blue-500 text-white rounded-lg text-sm hover:bg-blue-600">🗺️ Yo'nalish</button>
+                        <button onclick="focusClinic(${c.lat}, ${c.lng})" class="flex-1 py-2 bg-blue-500 text-white rounded-lg text-sm hover:bg-blue-600">🗺️ Xaritada</button>
                     </div>
                 </div>
             `).join('');
         }
 
-        function getLocation() {
-            if (navigator.geolocation) {
-                navigator.geolocation.getCurrentPosition(pos => {
-                    showToast(`Joylashuv: ${pos.coords.latitude.toFixed(4)}, ${pos.coords.longitude.toFixed(4)}`, 'info');
-                }, () => showToast('Joylashuvni aniqlab bo\'lmadi', 'error'));
+        function focusClinic(lat, lng) {
+            if (lat && lng) {
+                map.setView([lat, lng], 16);
+                // Open popup for this marker
+                markers.forEach(m => {
+                    if (m.getLatLng().lat === lat && m.getLatLng().lng === lng) {
+                        m.openPopup();
+                    }
+                });
             }
-        }
-
-        function getDirections(lat, lng) {
-            window.open(`https://www.google.com/maps/dir/?api=1&destination=${lat},${lng}`, '_blank');
         }
 
         function getDemoClinics() {
@@ -154,6 +308,12 @@
                 { id: 5, name: 'Happy Pets Vet', address: 'Yunusobod tumani, 4', lat: 41.3500, lng: 69.2900, phone: '+998712345682', working_hours: '10:00-19:00', rating: 4.4 }
             ];
         }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            initMap();
+            loadClinics();
+        });
     </script>
 </body>
 

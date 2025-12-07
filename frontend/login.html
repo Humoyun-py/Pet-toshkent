@@ -56,14 +56,15 @@
 
             <div class="mt-6 pt-6 border-t text-center">
                 <p class="text-gray-400 text-sm mb-4">yoki</p>
-                <a href="https://t.me/PetTashkentBot"
-                    class="inline-flex items-center gap-2 px-6 py-3 bg-[#0088cc] text-white rounded-xl font-medium hover:bg-[#006699]">
+                <a href="https://t.me/tashkentekohackaton_bot?start=login" target="_blank" id="telegramBtn"
+                    class="inline-flex items-center gap-2 px-6 py-3 bg-[#0088cc] text-white rounded-xl font-medium hover:bg-[#006699] w-full justify-center">
                     <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
                         <path
                             d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.562 8.161c-.18.716-3.026 10.327-3.026 10.327-.237.951-.879 1.188-1.411.742 0 0-2.638-1.945-3.548-2.738-.282-.273-.336-.512-.074-.819.631-.693 4.001-3.656 4.001-3.656s.471-.335-.113-.465c-.189-.042-2.724 1.584-4.684 2.917-.497.336-1.053.3-1.543.13l-2.168-.671s-.666-.262-.073-.768c.148-.126.297-.213.516-.32 2.259-1.043 7.634-3.125 8.289-3.382.656-.257 1.298.098 1.834.703z" />
                     </svg>
                     Telegram orqali kirish
                 </a>
+                <p class="text-xs text-gray-400 mt-2">Botga /login buyrug'ini yuboring</p>
             </div>
         </div>
 
@@ -75,6 +76,43 @@
     <script src="js/main.js"></script>
     <script>
         if (isLoggedIn()) window.location.href = '/';
+
+        // Check for Telegram auth in URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const tgId = urlParams.get('tg_id');
+        const tgName = urlParams.get('tg_name');
+        const tgUser = urlParams.get('tg_user');
+
+        if (tgId) {
+            // Auto-login with Telegram
+            telegramLogin(tgId, tgName, tgUser);
+        }
+
+        async function telegramLogin(telegramId, fullName, username) {
+            try {
+                const res = await fetch(`${API_BASE}/api/auth/telegram`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        telegram_id: parseInt(telegramId),
+                        full_name: fullName || 'Telegram User',
+                        username: username || ''
+                    })
+                });
+                const data = await res.json();
+
+                if (res.ok) {
+                    setToken(data.token);
+                    setUser(data.user);
+                    showToast('Telegram orqali kirdingiz!', 'success');
+                    setTimeout(() => window.location.href = '/', 1000);
+                } else {
+                    throw new Error(data.error);
+                }
+            } catch (err) {
+                showToast(err.message || 'Telegram login xatosi', 'error');
+            }
+        }
 
         document.getElementById('loginForm').onsubmit = async e => {
             e.preventDefault();

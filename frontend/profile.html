@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="uz">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profil - Pet Tashkent</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+    </style>
+</head>
+
+<body class="bg-gray-50 min-h-screen">
+    <!-- Navigation -->
+    <nav class="sticky top-0 z-50 bg-white/80 backdrop-blur border-b">
+        <div class="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between">
+            <a href="/" class="flex items-center gap-2">
+                <span class="text-2xl">🐾</span>
+                <span
+                    class="font-bold text-xl bg-gradient-to-r from-orange-500 to-pink-500 bg-clip-text text-transparent">Pet
+                    Tashkent</span>
+            </a>
+            <div class="hidden md:flex gap-8">
+                <a href="/" class="text-gray-600 hover:text-orange-500">Bosh sahifa</a>
+                <a href="pets.html" class="text-gray-600 hover:text-orange-500">Hayvonlar</a>
+                <a href="clinics.html" class="text-gray-600 hover:text-orange-500">Veterinarlar</a>
+                <a href="donation.html" class="text-gray-600 hover:text-orange-500">Xayriya</a>
+            </div>
+            <div class="flex items-center gap-4">
+                <a href="add-pet.html"
+                    class="px-4 py-2 bg-orange-500 text-white rounded-lg text-sm hover:bg-orange-600">+ E'lon berish</a>
+            </div>
+        </div>
+    </nav>
+
+    <main class="max-w-4xl mx-auto px-4 py-8">
+        <!-- Profile Header -->
+        <div class="bg-gradient-to-r from-orange-500 to-pink-500 rounded-3xl p-8 text-white mb-8">
+            <div class="flex flex-col md:flex-row items-center gap-6">
+                <div id="avatar"
+                    class="w-24 h-24 bg-white/20 backdrop-blur rounded-full flex items-center justify-center text-4xl font-bold">
+                    ?
+                </div>
+                <div class="text-center md:text-left">
+                    <h1 id="userName" class="text-2xl font-bold mb-1">Yuklanmoqda...</h1>
+                    <p id="userEmail" class="text-white/80 mb-2"></p>
+                    <p id="userPhone" class="text-white/80"></p>
+                    <div class="flex gap-2 mt-4">
+                        <span id="userRole" class="px-3 py-1 bg-white/20 rounded-full text-sm"></span>
+                        <span id="userDate" class="px-3 py-1 bg-white/20 rounded-full text-sm"></span>
+                    </div>
+                </div>
+                <div class="md:ml-auto">
+                    <button onclick="logout()" class="px-4 py-2 bg-white/20 hover:bg-white/30 rounded-lg text-sm">
+                        🚪 Chiqish
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Stats -->
+        <div class="grid grid-cols-3 gap-4 mb-8">
+            <div class="bg-white rounded-2xl p-6 text-center shadow-sm">
+                <div id="statPets" class="text-3xl font-bold text-orange-500">0</div>
+                <div class="text-gray-500 text-sm">E'lonlarim</div>
+            </div>
+            <div class="bg-white rounded-2xl p-6 text-center shadow-sm">
+                <div id="statViews" class="text-3xl font-bold text-blue-500">0</div>
+                <div class="text-gray-500 text-sm">Ko'rishlar</div>
+            </div>
+            <div class="bg-white rounded-2xl p-6 text-center shadow-sm">
+                <div id="statDonations" class="text-3xl font-bold text-green-500">0</div>
+                <div class="text-gray-500 text-sm">Xayriyalarim</div>
+            </div>
+        </div>
+
+        <!-- My Pets -->
+        <div class="bg-white rounded-2xl shadow-sm p-6 mb-8">
+            <div class="flex items-center justify-between mb-6">
+                <h2 class="text-xl font-bold">Mening e'lonlarim</h2>
+                <a href="add-pet.html"
+                    class="px-4 py-2 bg-orange-500 text-white rounded-lg text-sm hover:bg-orange-600">
+                    + Yangi e'lon
+                </a>
+            </div>
+            <div id="myPets" class="grid md:grid-cols-2 gap-4">
+                <div class="text-center py-8 text-gray-500">Yuklanmoqda...</div>
+            </div>
+        </div>
+
+        <!-- Edit Profile -->
+        <div class="bg-white rounded-2xl shadow-sm p-6">
+            <h2 class="text-xl font-bold mb-6">Profilni tahrirlash</h2>
+            <form id="editProfileForm" class="space-y-4">
+                <div>
+                    <label class="block text-sm font-medium mb-2">To'liq ism</label>
+                    <input type="text" id="editName"
+                        class="w-full px-4 py-3 border rounded-xl focus:border-orange-500 focus:outline-none">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium mb-2">Telefon</label>
+                    <input type="tel" id="editPhone"
+                        class="w-full px-4 py-3 border rounded-xl focus:border-orange-500 focus:outline-none">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium mb-2">Email</label>
+                    <input type="email" id="editEmail"
+                        class="w-full px-4 py-3 border rounded-xl focus:border-orange-500 focus:outline-none" disabled>
+                </div>
+                <button type="submit"
+                    class="w-full py-3 bg-orange-500 text-white rounded-xl font-semibold hover:bg-orange-600">
+                    Saqlash
+                </button>
+            </form>
+        </div>
+
+        <!-- Not Logged In -->
+        <div id="notLoggedIn" class="hidden text-center py-20">
+            <div class="text-6xl mb-4">🔐</div>
+            <h2 class="text-2xl font-bold mb-2">Tizimga kiring</h2>
+            <p class="text-gray-500 mb-6">Profilingizni ko'rish uchun tizimga kiring</p>
+            <a href="login.html"
+                class="px-6 py-3 bg-orange-500 text-white rounded-xl font-semibold hover:bg-orange-600">
+                Kirish
+            </a>
+        </div>
+    </main>
+
+    <script src="js/main.js"></script>
+    <script>
+        let user = null;
+        let myPets = [];
+
+        document.addEventListener('DOMContentLoaded', loadProfile);
+
+        async function loadProfile() {
+            // Check if logged in
+            user = getUser();
+
+            if (!user) {
+                // Demo mode - show demo user
+                user = {
+                    id: 1,
+                    full_name: 'Demo Foydalanuvchi',
+                    email: 'demo@pettashkent.uz',
+                    phone: '+998901234567',
+                    role: 'user',
+                    created_at: '2024-01-01'
+                };
+            }
+
+            displayUserInfo();
+            await loadMyPets();
+        }
+
+        function displayUserInfo() {
+            document.getElementById('avatar').textContent = user.full_name?.charAt(0) || '?';
+            document.getElementById('userName').textContent = user.full_name || 'Foydalanuvchi';
+            document.getElementById('userEmail').textContent = user.email || '';
+            document.getElementById('userPhone').textContent = user.phone || '';
+            document.getElementById('userRole').textContent = user.role === 'admin' ? '👑 Admin' : '👤 Foydalanuvchi';
+            document.getElementById('userDate').textContent = `📅 ${formatDate(user.created_at) || 'Yangi'}`;
+
+            // Edit form
+            document.getElementById('editName').value = user.full_name || '';
+            document.getElementById('editPhone').value = user.phone || '';
+            document.getElementById('editEmail').value = user.email || '';
+        }
+
+        async function loadMyPets() {
+            try {
+                const res = await fetch(`${API_BASE}/api/pets/list`);
+                if (res.ok) {
+                    const data = await res.json();
+                    // Filter by user_id in real app, for demo show all
+                    myPets = data.pets.slice(0, 6);
+                }
+            } catch (e) {
+                myPets = [];
+            }
+
+            displayMyPets();
+            updateStats();
+        }
+
+        function displayMyPets() {
+            const container = document.getElementById('myPets');
+
+            if (myPets.length === 0) {
+                container.innerHTML = `
+                    <div class="col-span-2 text-center py-8">
+                        <div class="text-4xl mb-2">🐾</div>
+                        <p class="text-gray-500">Hali e'lon yo'q</p>
+                        <a href="add-pet.html" class="inline-block mt-4 px-4 py-2 bg-orange-500 text-white rounded-lg text-sm">Birinchi e'lonni bering</a>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = myPets.map(pet => {
+                const typeEmoji = { 'dog': '🐕', 'cat': '🐈', 'bird': '🦜', 'fish': '🐠', 'other': '🐰' };
+                const statusClass = {
+                    'selling': 'bg-blue-100 text-blue-700',
+                    'free': 'bg-green-100 text-green-700',
+                    'foster': 'bg-purple-100 text-purple-700',
+                    'adoption': 'bg-pink-100 text-pink-700'
+                };
+                const statusText = { 'selling': 'Sotiladi', 'free': 'Bepul', 'foster': 'Foster', 'adoption': 'Adoptsiya' };
+
+                return `
+                    <div class="flex items-center gap-4 p-4 bg-gray-50 rounded-xl hover:bg-gray-100 transition-colors">
+                        <div class="w-16 h-16 bg-gray-200 rounded-xl flex items-center justify-center text-2xl overflow-hidden">
+                            ${pet.image
+                        ? `<img src="${API_BASE}/static/uploads/${pet.image}" class="w-full h-full object-cover">`
+                        : typeEmoji[pet.pet_type] || '🐾'
+                    }
+                        </div>
+                        <div class="flex-1">
+                            <h3 class="font-semibold">${pet.name}</h3>
+                            <p class="text-sm text-gray-500">${pet.breed || pet.pet_type}</p>
+                            <div class="flex items-center gap-2 mt-1">
+                                <span class="text-xs px-2 py-0.5 ${statusClass[pet.status] || 'bg-gray-100'} rounded-full">${statusText[pet.status] || pet.status}</span>
+                                <span class="text-xs text-gray-400">👁 ${pet.views || 0}</span>
+                            </div>
+                        </div>
+                        <div class="text-right">
+                            <p class="font-bold text-orange-500">${pet.price > 0 ? formatPrice(pet.price) : 'Bepul'}</p>
+                            <a href="pet-detail.html?id=${pet.id}" class="text-xs text-blue-500 hover:underline">Ko'rish →</a>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function updateStats() {
+            document.getElementById('statPets').textContent = myPets.length;
+
+            const totalViews = myPets.reduce((sum, p) => sum + (p.views || 0), 0);
+            document.getElementById('statViews').textContent = totalViews;
+
+            // Donations - demo value
+            document.getElementById('statDonations').textContent = '0';
+        }
+
+        function formatDate(dateStr) {
+            if (!dateStr) return '';
+            const date = new Date(dateStr);
+            return date.toLocaleDateString('uz-UZ', { year: 'numeric', month: 'short', day: 'numeric' });
+        }
+
+        function logout() {
+            localStorage.removeItem('pet_token');
+            localStorage.removeItem('pet_user');
+            showToast("Tizimdan chiqdingiz", 'info');
+            setTimeout(() => window.location.href = '/', 1500);
+        }
+
+        document.getElementById('editProfileForm').onsubmit = async e => {
+            e.preventDefault();
+
+            const data = {
+                full_name: document.getElementById('editName').value,
+                phone: document.getElementById('editPhone').value
+            };
+
+            try {
+                const token = getToken();
+                if (token) {
+                    const res = await fetch(`${API_BASE}/api/auth/profile`, {
+                        method: 'PUT',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${token}`
+                        },
+                        body: JSON.stringify(data)
+                    });
+
+                    if (res.ok) {
+                        const result = await res.json();
+                        setUser(result.user);
+                        showToast("Profil yangilandi!", 'success');
+                    }
+                } else {
+                    showToast("Profil yangilandi! (demo)", 'success');
+                }
+            } catch (err) {
+                showToast("Profil yangilandi! (demo)", 'success');
+            }
+        };
+    </script>
+</body>
+
+</html>

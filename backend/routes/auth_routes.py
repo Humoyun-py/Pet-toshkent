@@ -102,3 +102,58 @@ def update_profile():
         'message': 'Profile updated',
         'user': user.to_dict()
     })
+
+@auth_bp.route('/telegram', methods=['POST'])
+def telegram_login():
+    """Login or register via Telegram"""
+    data = request.get_json()
+    
+    telegram_id = data.get('telegram_id')
+    full_name = data.get('full_name', 'Telegram User')
+    username = data.get('username', '')
+    
+    if not telegram_id:
+        return jsonify({'error': 'telegram_id is required'}), 400
+    
+    # Find or create user
+    user = User.query.filter_by(telegram_id=telegram_id).first()
+    
+    if not user:
+        # Create new user with Telegram
+        email = f"tg_{telegram_id}@pettashkent.uz"
+        user = User(
+            full_name=full_name,
+            email=email,
+            telegram_id=telegram_id,
+            phone=username if username else None,
+            role='user'
+        )
+        user.set_password(str(telegram_id))  # Default password
+        
+        db.session.add(user)
+        db.session.commit()
+    
+    if user.is_banned:
+        return jsonify({'error': 'Account is banned'}), 403
+    
+    token = create_access_token(identity=user.id)
+    
+    return jsonify({
+        'message': 'Telegram login successful',
+        'token': token,
+        'user': user.to_dict()
+    })
+
+@auth_bp.route('/telegram/check/<int:telegram_id>', methods=['GET'])
+def check_telegram_user(telegram_id):
+    """Check if Telegram user exists"""
+    user = User.query.filter_by(telegram_id=telegram_id).first()
+    
+    if user:
+        return jsonify({
+            'exists': True,
+            'user': user.to_dict()
+        })
+    
+    return jsonify({'exists': False})
+

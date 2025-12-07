@@ -154,7 +154,32 @@
     <script>
         document.getElementById('currentDate').textContent = new Date().toLocaleDateString('uz-UZ', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
 
-        document.addEventListener('DOMContentLoaded', loadDashboard);
+        // Check admin access
+        function checkAdminAccess() {
+            const user = getUser();
+            const token = getToken();
+
+            if (!user || !token) {
+                // Not logged in - redirect to login
+                window.location.href = '../login.html?redirect=/admin/';
+                return false;
+            }
+
+            if (user.role !== 'admin') {
+                // Not admin - show message and redirect
+                alert('Sizda admin huquqi yo\'q!');
+                window.location.href = '../index.html';
+                return false;
+            }
+
+            return true;
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            if (checkAdminAccess()) {
+                loadDashboard();
+            }
+        });
 
         async function loadDashboard() {
             try {

@@ -84,7 +84,14 @@
 
     <script src="../js/main.js"></script>
     <script>
-        document.addEventListener('DOMContentLoaded', () => { loadStats(); loadDonations(); });
+        function checkAdminAccess() {
+            const user = getUser();
+            if (!user || !getToken()) { window.location.href = '../login.html?redirect=/admin/donations.html'; return false; }
+            if (user.role !== 'admin') { alert('Admin huquqi kerak!'); window.location.href = '../index.html'; return false; }
+            return true;
+        }
+
+        document.addEventListener('DOMContentLoaded', () => { if (checkAdminAccess()) { loadStats(); loadDonations(); } });
 
         async function loadStats() {
             try {
